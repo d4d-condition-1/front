@@ -54,21 +54,6 @@ export function overallScore(scores: CategoryScore[]): number {
   return Math.round(scores.reduce((s, c) => s + c.score, 0) / scores.length);
 }
 
-// 현재 로그인 장병의 mock 점수 프로필
-const MY_SCORES: CategoryScore[] = [
-  { code: "TAC", score: 70, attempts: 42, correct: 30 },
-  { code: "FIR", score: 35, attempts: 28, correct: 9 },
-  { code: "TER", score: 80, attempts: 35, correct: 29 },
-  { code: "COM", score: 55, attempts: 22, correct: 12 },
-  { code: "MED", score: 85, attempts: 40, correct: 35 },
-  { code: "NBC", score: 45, attempts: 18, correct: 8 },
-  { code: "EQP", score: 60, attempts: 31, correct: 19 },
-];
-
-export function getMyScores(): CategoryScore[] {
-  return MY_SCORES;
-}
-
 /** 가장 약한 카테고리 */
 export function weakestCategory(scores: CategoryScore[]): CategoryScore {
   return [...scores].sort((a, b) => a.score - b.score)[0];

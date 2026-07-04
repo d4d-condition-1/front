@@ -1,11 +1,32 @@
-import { Badge, Card, Icon, RadarChart } from "@/components/ui";
-import { getCategory, getMyScores, gradeOf } from "@/features/categories";
-import { getAnalysis, getTrainingStats, toRadarData } from "@/features/report";
+"use client";
+
+import Link from "next/link";
+
+import { Badge, Button, Card, Icon, RadarChart, Spinner } from "@/components/ui";
+import { getCategory, gradeOf } from "@/features/categories";
+import { toRadarData, useReport } from "@/features/report";
 
 export default function ReportPage() {
-  const scores = getMyScores();
-  const stats = getTrainingStats();
-  const analysis = getAnalysis();
+  const { data, loading, error } = useReport();
+
+  if (loading) {
+    return (
+      <div className="grid flex-1 place-items-center py-24 text-primary-600">
+        <Spinner size={28} />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="grid flex-1 place-items-center px-8 py-24 text-center text-sm text-slate-500">
+        {error ?? "리포트를 불러올 수 없습니다."}
+      </div>
+    );
+  }
+
+  const { stats, analysis, scores } = data;
+  const hasHistory = stats.totalSolved > 0;
 
   const tiles = [
     { label: "정답률", value: `${stats.overallAccuracy}%`, icon: "target" as const },
@@ -38,31 +59,49 @@ export default function ReportPage() {
         ))}
       </div>
 
-      {/* 강점 / 약점 */}
-      <Card className="flex flex-col gap-4">
-        <div className="flex items-start gap-3">
-          <Badge tone="green">강점</Badge>
-          <div>
-            <p className="font-semibold text-slate-900">
-              {analysis.strength.name} ({analysis.strength.score}점)
-            </p>
-            <p className="text-sm text-slate-500">{analysis.strength.note}</p>
+      {/* 강점 / 약점 (풀이 이력이 있을 때만) */}
+      {analysis ? (
+        <Card className="flex flex-col gap-4">
+          <div className="flex items-start gap-3">
+            <Badge tone="green">강점</Badge>
+            <div>
+              <p className="font-semibold text-slate-900">
+                {analysis.strength.name} ({analysis.strength.score}점)
+              </p>
+              <p className="text-sm text-slate-500">{analysis.strength.note}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-start gap-3">
-          <Badge tone="red">약점</Badge>
-          <div>
-            <p className="font-semibold text-slate-900">
-              {analysis.weakness.name} ({analysis.weakness.score}점)
-            </p>
-            <p className="text-sm text-slate-500">{analysis.weakness.note}</p>
+          <div className="flex items-start gap-3">
+            <Badge tone="red">약점</Badge>
+            <div>
+              <p className="font-semibold text-slate-900">
+                {analysis.weakness.name} ({analysis.weakness.score}점)
+              </p>
+              <p className="text-sm text-slate-500">{analysis.weakness.note}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-start gap-3 rounded-xl bg-primary-50 p-3">
-          <Badge tone="primary">추천</Badge>
-          <p className="text-sm font-medium text-primary-800">{analysis.recommendation}</p>
-        </div>
-      </Card>
+          <div className="flex items-start gap-3 rounded-xl bg-primary-50 p-3">
+            <Badge tone="primary">추천</Badge>
+            <p className="text-sm font-medium text-primary-800">{analysis.recommendation}</p>
+          </div>
+        </Card>
+      ) : (
+        <Card className="flex flex-col items-center gap-3 py-8 text-center">
+          <div className="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400">
+            <Icon name="chart" size={24} />
+          </div>
+          <p className="text-sm text-slate-500">
+            아직 풀이 이력이 없습니다.
+            <br />
+            진단 테스트를 먼저 완료하면 강점·약점 분석이 표시됩니다.
+          </p>
+          <Link href="/app/diagnostic">
+            <Button variant="secondary" size="sm">
+              진단 테스트 시작
+            </Button>
+          </Link>
+        </Card>
+      )}
 
       {/* 카테고리별 상세 */}
       <Card className="p-0">
@@ -82,7 +121,9 @@ export default function ReportPage() {
                 </span>
                 <span className="flex-1 text-sm font-medium text-slate-700">{cat.name}</span>
                 <span className="text-sm font-bold text-slate-900">{s.score}</span>
-                <Badge tone={s.score >= 60 ? "green" : "amber"}>{gradeOf(s.score)}</Badge>
+                <Badge tone={s.score >= 60 ? "green" : hasHistory ? "amber" : "slate"}>
+                  {gradeOf(s.score)}
+                </Badge>
               </li>
             );
           })}

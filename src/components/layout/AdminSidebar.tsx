@@ -10,6 +10,7 @@ const items: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin", label: "부대 현황", icon: "chart" },
   { href: "/admin/units", label: "부대 관리", icon: "home" },
   { href: "/admin/users", label: "장병 관리", icon: "users" },
+  { href: "/admin/programs", label: "커리큘럼", icon: "list" },
   { href: "/admin/accounts", label: "계정/권한", icon: "settings" },
   { href: "/admin/ai", label: "AI 연동", icon: "cpu" },
   { href: "/admin/materials", label: "학습 자료", icon: "book" },

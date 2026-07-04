@@ -2,31 +2,58 @@
 
 import Link from "next/link";
 
-import { Badge, Button, Icon, ProgressBar } from "@/components/ui";
+import { Badge, Button, Icon, ProgressBar, Spinner } from "@/components/ui";
 import { getCategory } from "@/features/categories";
-import type { TrainingQuestion } from "../api/trainingApi";
+import type { TrainingMode } from "../api/trainingApi";
 import { useSession } from "../hooks/useSession";
 import { Choice } from "./Choice";
 import { SessionResult } from "./SessionResult";
 
 interface SessionRunnerProps {
   title: string;
-  questions: TrainingQuestion[];
+  mode: TrainingMode;
   exitHref: string;
   ctaHref: string;
   ctaLabel: string;
 }
 
-/** 진단/훈련 세션 화면 전체 (상황 → 선택 → 제출 → 피드백 → 다음). */
-export function SessionRunner({ title, questions, exitHref, ctaHref, ctaLabel }: SessionRunnerProps) {
-  const s = useSession(questions);
+/** 진단/훈련 세션 화면 전체. 문항 출제·채점은 서버가 담당한다. */
+export function SessionRunner({ title, mode, exitHref, ctaHref, ctaLabel }: SessionRunnerProps) {
+  const s = useSession(mode);
+
+  // 로딩
+  if (s.loading) {
+    return (
+      <div className="grid min-h-full flex-1 place-items-center py-24 text-primary-600">
+        <Spinner size={28} />
+      </div>
+    );
+  }
+
+  // 에러 / 출제 가능한 문항 없음 (관리자가 아직 문항을 등록하지 않음)
+  if (s.error || s.total === 0) {
+    return (
+      <div className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-8 py-24 text-center">
+        <div className="grid h-14 w-14 place-items-center rounded-full bg-slate-100 text-slate-400">
+          <Icon name="book" size={26} />
+        </div>
+        <p className="text-sm text-slate-500">
+          {s.error ?? "아직 출제 가능한 문항이 없습니다.\n관리자가 문항을 등록하면 훈련을 시작할 수 있습니다."}
+        </p>
+        <Link href={exitHref}>
+          <Button variant="secondary">돌아가기</Button>
+        </Link>
+      </div>
+    );
+  }
 
   if (s.done) {
     return (
       <SessionResult
         title={title}
-        correctCount={s.correctCount}
+        correctCount={s.summary?.correctCount ?? s.correctCount}
         total={s.total}
+        grade={s.summary?.grade}
         ctaHref={ctaHref}
         ctaLabel={ctaLabel}
       />
@@ -72,34 +99,36 @@ export function SessionRunner({ title, questions, exitHref, ctaHref, ctaLabel }:
               index={i}
               selected={s.selected === i}
               revealed={s.revealed}
-              isAnswer={q.answerIndex === i}
+              isAnswer={s.feedback?.answerIndex === i}
               onClick={() => s.select(i)}
             />
           ))}
         </div>
 
-        {/* 피드백 */}
+        {/* 피드백 (서버 채점 결과) */}
         {s.revealed && s.feedback && (
           <div className="mt-4 flex flex-col gap-3">
             <div
               className={`flex items-center gap-2 text-sm font-bold ${
-                s.feedback.isCorrect ? "text-emerald-600" : "text-red-500"
+                s.feedback.correct ? "text-emerald-600" : "text-red-500"
               }`}
             >
-              <Icon name={s.feedback.isCorrect ? "check" : "x"} size={18} />
-              {s.feedback.isCorrect ? "정답" : "오답"}
+              <Icon name={s.feedback.correct ? "check" : "x"} size={18} />
+              {s.feedback.correct ? "정답" : "오답"}
             </div>
 
             <div className="rounded-2xl border border-primary-100 bg-primary-50/60 p-4">
               <p className="mb-1 text-xs font-bold text-primary-600">해설</p>
-              <p className="text-sm leading-relaxed text-slate-700">{q.explanation}</p>
-              <p className="mt-2 text-xs text-slate-400">출처: {q.reference}</p>
+              <p className="text-sm leading-relaxed text-slate-700">{s.feedback.explanation}</p>
+              {s.feedback.reference && (
+                <p className="mt-2 text-xs text-slate-400">출처: {s.feedback.reference}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
               <span className="text-slate-300">{cat.name} 점수</span>
               <span className="font-bold">
-                {s.feedback.before} → {s.feedback.after}{" "}
+                {s.feedback.score}점{" "}
                 <span className={s.feedback.delta >= 0 ? "text-emerald-400" : "text-red-400"}>
                   ({s.feedback.delta >= 0 ? "+" : ""}
                   {s.feedback.delta})
@@ -117,7 +146,7 @@ export function SessionRunner({ title, questions, exitHref, ctaHref, ctaLabel }:
             {s.isLast ? "결과 보기" : "다음 문항"}
           </Button>
         ) : (
-          <Button size="lg" disabled={s.selected == null} onClick={s.check}>
+          <Button size="lg" loading={s.submitting} disabled={s.selected == null} onClick={s.check}>
             제출
           </Button>
         )}
