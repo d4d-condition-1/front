@@ -19,13 +19,15 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
 
-const ROOT = path.resolve(__dirname, "..");
+// 도커 이미지로 실행할 때는 앱 소스가 마운트된 경로를 PROJECT_DIR 로 넘긴다.
+// (호스트에서 직접 실행하면 deploy/ 의 상위 = 프로젝트 루트로 자동 계산)
+const ROOT = process.env.PROJECT_DIR || path.resolve(__dirname, "..");
 loadEnv(path.join(ROOT, ".env"));
 
 const PORT = Number(process.env.WEBHOOK_PORT) || 9000;
 const SECRET = process.env.WEBHOOK_SECRET || "";
 const BRANCH = process.env.DEPLOY_BRANCH || "main";
-const DEPLOY_SCRIPT = path.join(__dirname, "deploy.sh");
+const DEPLOY_SCRIPT = path.join(ROOT, "deploy", "deploy.sh");
 
 if (!SECRET) {
   console.error("[webhook] .env 에 WEBHOOK_SECRET 이 없습니다. 종료합니다.");

@@ -11,7 +11,9 @@
       "Bash(chmod +x deploy/deploy.sh deploy/webhook-server.js)",
       "Bash(chmod +x deploy/deploy.sh)",
       "Bash(chmod +x deploy/webhook-server.js deploy/deploy.sh)",
-      "Bash(node --check deploy/webhook-server.js)"
+      "Bash(node --check deploy/webhook-server.js)",
+      "Bash(chmod +x deploy/webhook-up.sh deploy/webhook-server.js deploy/deploy.sh)",
+      "Bash(bash -n deploy/webhook-up.sh)"
     ]
   }
 }
