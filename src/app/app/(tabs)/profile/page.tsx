@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-4 px-5 pb-6 pt-6">
-      <h1 className="text-xl font-bold text-slate-900">프로필</h1>
+      <h1 className="text-xl font-bold text-ink">프로필</h1>
 
       <Card className="flex items-center gap-4">
         <span className="grid h-14 w-14 place-items-center rounded-full bg-primary-100 text-lg font-bold text-primary-700">
@@ -42,11 +42,11 @@ export default function ProfilePage() {
           ) : (
             <>
               <div className="flex flex-wrap items-center gap-2">
-                <p className="font-bold text-slate-900">{user?.name ?? "-"}</p>
+                <p className="font-bold text-ink">{user?.name ?? "-"}</p>
                 {user?.rank && <Badge tone="slate">{user.rank}</Badge>}
                 {!scoresLoading && <Badge tone="primary">등급 {gradeOf(overall)}</Badge>}
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-ink-faint">
                 {[unitLabel, `종합 ${overall}점`].filter(Boolean).join(" · ")}
                 {user?.loginId ? ` · @${user.loginId}` : ""}
               </p>
@@ -55,25 +55,25 @@ export default function ProfilePage() {
         </div>
       </Card>
 
-      <Card className="divide-y divide-slate-50 p-0">
+      <Card className="divide-y divide-line p-0">
         {menu.map((m) => (
           <Link
             key={m.label}
             href={m.href}
-            className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm hover:bg-slate-50"
+            className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm hover:bg-surface-2"
           >
-            <span className="text-slate-400">
+            <span className="text-ink-faint">
               <Icon name={m.icon} size={20} />
             </span>
-            <span className="flex-1 font-medium text-slate-700">{m.label}</span>
-            <Icon name="chevronRight" size={18} className="text-slate-300" />
+            <span className="flex-1 font-medium text-ink">{m.label}</span>
+            <Icon name="chevronRight" size={18} className="text-ink-faint" />
           </Link>
         ))}
       </Card>
 
       <button
         onClick={onLogout}
-        className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm font-semibold text-slate-400 ring-1 ring-slate-200 hover:text-slate-600"
+        className="flex items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 text-sm font-semibold text-ink-faint ring-1 ring-line hover:text-ink"
       >
         <Icon name="logout" size={18} /> 로그아웃
       </button>

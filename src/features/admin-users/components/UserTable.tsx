@@ -13,10 +13,10 @@ const gradeTone: Record<Grade, "green" | "primary" | "amber" | "red"> = {
 /** 장병 목록 테이블. */
 export function UserTable({ trainees }: { trainees: Trainee[] }) {
   return (
-    <div className="overflow-x-auto rounded-2xl bg-white ring-1 ring-slate-100">
+    <div className="overflow-x-auto rounded-2xl bg-surface ring-1 ring-line">
       <table className="w-full min-w-[720px] text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-100 text-xs text-slate-400">
+          <tr className="border-b border-line text-xs text-ink-faint">
             <th className="px-5 py-3 font-medium">장병</th>
             <th className="px-5 py-3 font-medium">소속</th>
             <th className="px-5 py-3 font-medium">종합 숙련도</th>
@@ -27,36 +27,36 @@ export function UserTable({ trainees }: { trainees: Trainee[] }) {
         </thead>
         <tbody>
           {trainees.map((t) => (
-            <tr key={t.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+            <tr key={t.id} className="border-b border-line last:border-0 hover:bg-surface-2/60">
               <td className="px-5 py-3">
                 <div className="flex items-center gap-3">
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">
                     {t.name.slice(0, 1)}
                   </span>
                   <div>
-                    <p className="font-semibold text-slate-800">{t.name}</p>
-                    <p className="text-xs text-slate-400">{t.rank}</p>
+                    <p className="font-semibold text-ink">{t.name}</p>
+                    <p className="text-xs text-ink-faint">{t.rank}</p>
                   </div>
                 </div>
               </td>
-              <td className="px-5 py-3 text-slate-600">
+              <td className="px-5 py-3 text-ink-muted">
                 {t.unitName ? (
                   <>
                     {t.unitName}
                     {t.unit && (
-                      <span className="text-slate-400"> · {t.unit}</span>
+                      <span className="text-ink-faint"> · {t.unit}</span>
                     )}
                   </>
                 ) : (
                   t.unit || "-"
                 )}
               </td>
-              <td className="px-5 py-3 font-medium text-slate-700">{t.score}</td>
+              <td className="px-5 py-3 font-medium text-ink">{t.score}</td>
               <td className="px-5 py-3">
                 <Badge tone={gradeTone[t.grade]}>{t.grade}</Badge>
               </td>
-              <td className="px-5 py-3 text-slate-600">{t.solved}</td>
-              <td className="px-5 py-3 text-slate-400">{t.lastActive}</td>
+              <td className="px-5 py-3 text-ink-muted">{t.solved}</td>
+              <td className="px-5 py-3 text-ink-faint">{t.lastActive}</td>
             </tr>
           ))}
         </tbody>

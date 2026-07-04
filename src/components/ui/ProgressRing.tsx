@@ -36,8 +36,8 @@ export function ProgressRing({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        {label && <span className="text-2xl font-bold text-slate-900">{label}</span>}
-        {sublabel && <span className="text-xs text-slate-400">{sublabel}</span>}
+        {label && <span className="text-2xl font-bold text-ink">{label}</span>}
+        {sublabel && <span className="text-xs text-ink-faint">{sublabel}</span>}
       </div>
     </div>
   );

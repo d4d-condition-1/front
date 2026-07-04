@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "./Spinner";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "signal";
 type Size = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -14,10 +14,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<Variant, string> = {
-  primary: "bg-primary-600 text-white hover:bg-primary-700 shadow-sm shadow-primary-600/20",
-  secondary: "bg-primary-50 text-primary-700 hover:bg-primary-100",
-  ghost: "text-slate-600 hover:bg-slate-100",
-  danger: "text-red-600 hover:bg-red-50",
+  primary: "bg-primary-600 text-white hover:bg-primary-500",
+  // signal = 전술 앰버. 작전 개시 등 핵심 CTA 에만 (화면당 1개 권장)
+  signal: "bg-signal-300 text-[#1a1206] hover:bg-signal-200 font-bold tracking-wide",
+  secondary: "bg-surface-2 text-ink ring-1 ring-line hover:bg-line",
+  ghost: "text-ink-muted hover:bg-surface-2 hover:text-ink",
+  danger: "text-red-400 hover:bg-red-500/10",
 };
 
 const sizeStyles: Record<Size, string> = {

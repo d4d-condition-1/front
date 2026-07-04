@@ -8,7 +8,7 @@ import { CATEGORIES, getCategory, type CategoryCode } from "@/features/categorie
 import { useLibrary } from "../hooks/useLibrary";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
+  "w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
 
 /** 학습 자료 관리 (등록 · 목록 · 활성 토글 · 삭제). */
 export function LibraryManager() {
@@ -49,13 +49,13 @@ export function LibraryManager() {
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       {/* 자료 목록 */}
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-ink-faint">
           총 {items.length}개 자료 · {totalPages}페이지
         </p>
 
         <div className="flex flex-col gap-3">
           {items.length === 0 && (
-            <Card className="py-10 text-center text-sm text-slate-400">
+            <Card className="py-10 text-center text-sm text-ink-faint">
               등록된 자료가 없습니다. 우측 폼에서 등록하세요.
             </Card>
           )}
@@ -71,12 +71,12 @@ export function LibraryManager() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="truncate font-semibold text-slate-800">{it.title}</p>
+                    <p className="truncate font-semibold text-ink">{it.title}</p>
                     <Badge tone={it.isActive ? "green" : "slate"}>
                       {it.isActive ? "활성" : "비활성"}
                     </Badge>
                   </div>
-                  <p className="mt-0.5 text-xs text-slate-400">
+                  <p className="mt-0.5 text-xs text-ink-faint">
                     {cat.name} · {it.pages}페이지 · {it.uploadedAt}
                   </p>
                 </div>
@@ -101,10 +101,10 @@ export function LibraryManager() {
 
       {/* 신규 등록 폼 */}
       <Card className="h-fit">
-        <p className="mb-4 font-bold text-slate-900">자료 등록</p>
+        <p className="mb-4 font-bold text-ink">자료 등록</p>
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-500">제목</span>
+            <span className="text-xs font-medium text-ink-muted">제목</span>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -114,7 +114,7 @@ export function LibraryManager() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-500">카테고리</span>
+            <span className="text-xs font-medium text-ink-muted">카테고리</span>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as CategoryCode)}
@@ -129,7 +129,7 @@ export function LibraryManager() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-500">페이지 수</span>
+            <span className="text-xs font-medium text-ink-muted">페이지 수</span>
             <input
               value={pages}
               onChange={(e) => setPages(e.target.value)}

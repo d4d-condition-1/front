@@ -19,7 +19,7 @@ export default function ReportPage() {
 
   if (error || !data) {
     return (
-      <div className="grid flex-1 place-items-center px-8 py-24 text-center text-sm text-slate-500">
+      <div className="grid flex-1 place-items-center px-8 py-24 text-center text-sm text-ink-muted">
         {error ?? "리포트를 불러올 수 없습니다."}
       </div>
     );
@@ -37,10 +37,10 @@ export default function ReportPage() {
 
   return (
     <div className="flex flex-col gap-4 px-5 pb-6 pt-6">
-      <h1 className="text-xl font-bold text-slate-900">학습 리포트</h1>
+      <h1 className="text-xl font-bold text-ink">학습 리포트</h1>
 
       <Card className="flex flex-col items-center">
-        <p className="mb-1 w-full text-sm font-bold text-slate-900">역량 레이더</p>
+        <p className="mb-1 w-full text-sm font-bold text-ink">역량 레이더</p>
         <RadarChart data={toRadarData(scores)} size={280} />
       </Card>
 
@@ -52,8 +52,8 @@ export default function ReportPage() {
               <Icon name={t.icon} size={20} />
             </span>
             <div>
-              <p className="text-lg font-bold text-slate-900">{t.value}</p>
-              <p className="text-xs text-slate-400">{t.label}</p>
+              <p className="text-lg font-bold text-ink">{t.value}</p>
+              <p className="text-xs text-ink-faint">{t.label}</p>
             </div>
           </Card>
         ))}
@@ -65,19 +65,19 @@ export default function ReportPage() {
           <div className="flex items-start gap-3">
             <Badge tone="green">강점</Badge>
             <div>
-              <p className="font-semibold text-slate-900">
+              <p className="font-semibold text-ink">
                 {analysis.strength.name} ({analysis.strength.score}점)
               </p>
-              <p className="text-sm text-slate-500">{analysis.strength.note}</p>
+              <p className="text-sm text-ink-muted">{analysis.strength.note}</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Badge tone="red">약점</Badge>
             <div>
-              <p className="font-semibold text-slate-900">
+              <p className="font-semibold text-ink">
                 {analysis.weakness.name} ({analysis.weakness.score}점)
               </p>
-              <p className="text-sm text-slate-500">{analysis.weakness.note}</p>
+              <p className="text-sm text-ink-muted">{analysis.weakness.note}</p>
             </div>
           </div>
           <div className="flex items-start gap-3 rounded-xl bg-primary-50 p-3">
@@ -87,10 +87,10 @@ export default function ReportPage() {
         </Card>
       ) : (
         <Card className="flex flex-col items-center gap-3 py-8 text-center">
-          <div className="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400">
+          <div className="grid h-12 w-12 place-items-center rounded-full bg-surface-2 text-ink-faint">
             <Icon name="chart" size={24} />
           </div>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-ink-muted">
             아직 풀이 이력이 없습니다.
             <br />
             진단 테스트를 먼저 완료하면 강점·약점 분석이 표시됩니다.
@@ -105,22 +105,22 @@ export default function ReportPage() {
 
       {/* 카테고리별 상세 */}
       <Card className="p-0">
-        <p className="border-b border-slate-100 px-5 py-4 text-sm font-bold text-slate-900">
+        <p className="border-b border-line px-5 py-4 text-sm font-bold text-ink">
           영역별 숙련도
         </p>
         <ul>
           {scores.map((s) => {
             const cat = getCategory(s.code);
             return (
-              <li key={s.code} className="flex items-center gap-3 border-b border-slate-50 px-5 py-3 last:border-0">
+              <li key={s.code} className="flex items-center gap-3 border-b border-line px-5 py-3 last:border-0">
                 <span
                   className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[11px] font-bold text-white"
                   style={{ backgroundColor: cat.color }}
                 >
                   {s.code}
                 </span>
-                <span className="flex-1 text-sm font-medium text-slate-700">{cat.name}</span>
-                <span className="text-sm font-bold text-slate-900">{s.score}</span>
+                <span className="flex-1 text-sm font-medium text-ink">{cat.name}</span>
+                <span className="text-sm font-bold text-ink">{s.score}</span>
                 <Badge tone={s.score >= 60 ? "green" : hasHistory ? "amber" : "slate"}>
                   {gradeOf(s.score)}
                 </Badge>

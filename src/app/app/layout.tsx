@@ -7,7 +7,7 @@ import { AppNavBar } from "@/components/layout";
 export default function AppShell({ children }: { children: ReactNode }) {
   return (
     <AppGuard>
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-slate-50 shadow-sm">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-bg shadow-sm">
         <AppNavBar />
         {children}
       </div>

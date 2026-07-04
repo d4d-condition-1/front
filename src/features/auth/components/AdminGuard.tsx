@@ -20,7 +20,7 @@ export function AdminGuard({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="grid min-h-screen flex-1 place-items-center text-sm text-slate-400">
+      <div className="grid min-h-screen flex-1 place-items-center text-sm text-ink-faint">
         권한 확인 중...
       </div>
     );

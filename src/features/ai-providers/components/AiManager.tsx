@@ -8,7 +8,7 @@ import { PROVIDER_META, type Provider } from "../api/aiProviderApi";
 import { useAiConnections } from "../hooks/useAiConnections";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
+  "w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
 
 /** 관리자 AI 연동 관리: 등록 목록 + 신규 등록 폼. */
 export function AiManager() {
@@ -51,26 +51,26 @@ export function AiManager() {
       {/* 등록 목록 */}
       <div className="flex flex-col gap-3">
         {connections.length === 0 && (
-          <Card className="py-10 text-center text-sm text-slate-400">
+          <Card className="py-10 text-center text-sm text-ink-faint">
             등록된 AI 연동이 없습니다. 우측 폼에서 등록하세요.
           </Card>
         )}
         {connections.map((c) => (
           <Card key={c.id} className="flex items-center gap-4">
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-100 text-slate-600">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-surface-2 text-ink-muted">
               <Icon name="cpu" size={22} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="font-semibold text-slate-800">{c.label}</p>
+                <p className="font-semibold text-ink">{c.label}</p>
                 <Badge tone={c.status === "active" ? "green" : "slate"}>
                   {c.status === "active" ? "활성" : "중지"}
                 </Badge>
               </div>
-              <p className="mt-0.5 text-xs text-slate-400">
+              <p className="mt-0.5 text-xs text-ink-faint">
                 {PROVIDER_META[c.provider].name} · {c.model} · {c.apiKeyMasked}
               </p>
-              <p className="mt-0.5 text-xs text-slate-400">
+              <p className="mt-0.5 text-xs text-ink-faint">
                 요청 {c.requests.toLocaleString()}회 · 등록 {c.createdAt}
               </p>
             </div>
@@ -93,7 +93,7 @@ export function AiManager() {
 
       {/* 신규 등록 폼 */}
       <Card className="h-fit">
-        <p className="mb-4 font-bold text-slate-900">AI API 등록</p>
+        <p className="mb-4 font-bold text-ink">AI API 등록</p>
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <Field label="제공자">
             <select
@@ -157,7 +157,7 @@ export function AiManager() {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-xs font-medium text-slate-500">{label}</span>
+      <span className="text-xs font-medium text-ink-muted">{label}</span>
       {children}
     </label>
   );

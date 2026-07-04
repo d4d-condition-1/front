@@ -1,8 +1,11 @@
 import { AuthCard } from "@/features/auth";
+import { SecretTrigger } from "@/features/unit-codes";
 
 export default function LandingPage() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-primary-950 via-[#242c17] to-primary-900 px-6 text-white">
+      {/* 숨겨진 진입점: 우하단 구석 5번 탭 → 부대코드 발급 */}
+      <SecretTrigger />
       {/* 전술 지도풍 그리드 배경 */}
       <div
         aria-hidden

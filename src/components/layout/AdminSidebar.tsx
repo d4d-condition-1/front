@@ -21,12 +21,12 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 md:flex">
+    <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-surface px-4 py-6 md:flex">
       <Link href="/admin" className="mb-8 flex items-center gap-2 px-2">
         <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary-600 text-sm font-bold text-white">
           D4D
         </span>
-        <span className="font-bold text-slate-900">Admin</span>
+        <span className="font-bold text-ink">Admin</span>
       </Link>
 
       <nav className="flex flex-col gap-1">
@@ -43,7 +43,7 @@ export function AdminSidebar() {
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                 active
                   ? "bg-primary-50 text-primary-700"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800",
+                  : "text-ink-muted hover:bg-surface-2 hover:text-ink",
               )}
             >
               <Icon name={item.icon} size={20} />
@@ -55,7 +55,7 @@ export function AdminSidebar() {
 
       <Link
         href="/"
-        className="mt-auto flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 hover:bg-slate-50"
+        className="mt-auto flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-faint hover:bg-surface-2"
       >
         <Icon name="logout" size={20} />
         나가기

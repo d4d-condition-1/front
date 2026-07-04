@@ -92,8 +92,8 @@ export function FitnessView() {
         <Card key={ev.code} className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-slate-900">{ev.name}</p>
-              <p className="text-xs text-slate-400">{cutsLabel(ev.cuts, ev.unit)}</p>
+              <p className="font-bold text-ink">{ev.name}</p>
+              <p className="text-xs text-ink-faint">{cutsLabel(ev.cuts, ev.unit)}</p>
             </div>
             {ev.latest ? (
               <Badge tone={gradeTone[ev.latest.grade as FitnessGrade]}>
@@ -105,9 +105,9 @@ export function FitnessView() {
           </div>
 
           {ev.latest && (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-ink-muted">
               최근 기록{" "}
-              <b className="text-slate-800">
+              <b className="text-ink">
                 {ev.latest.value}
                 {ev.unit.includes("초") ? "초" : "회"}
               </b>
@@ -121,7 +121,7 @@ export function FitnessView() {
               value={inputs[ev.code] ?? ""}
               onChange={(e) => setInputs((p) => ({ ...p, [ev.code]: e.target.value }))}
               placeholder={`측정값 (${ev.unit})`}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              className="w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
             />
             <Button
               size="sm"

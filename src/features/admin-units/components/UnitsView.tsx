@@ -9,7 +9,7 @@ import { useUser } from "@/features/auth";
 import { useUnits } from "../hooks/useUnits";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
+  "w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
 
 /** 부대 관리 화면: 부대 목록 + 가입 코드 배포/재발급 + 생성(전체 관리자). */
 export function UnitsView() {
@@ -64,7 +64,7 @@ export function UnitsView() {
             {/* 부대 목록 */}
             <div className="flex flex-col gap-3">
               {units.length === 0 && (
-                <Card className="py-10 text-center text-sm text-slate-400">
+                <Card className="py-10 text-center text-sm text-ink-faint">
                   등록된 부대가 없습니다. 우측 폼에서 부대를 생성하세요.
                 </Card>
               )}
@@ -74,8 +74,8 @@ export function UnitsView() {
                     <Icon name="home" size={22} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-slate-800">{u.name}</p>
-                    <p className="mt-0.5 text-xs text-slate-400">
+                    <p className="font-semibold text-ink">{u.name}</p>
+                    <p className="mt-0.5 text-xs text-ink-faint">
                       장병 {u.members}명 · 관리자 {u.admins}명 · 생성 {u.createdAt}
                     </p>
                   </div>
@@ -85,7 +85,7 @@ export function UnitsView() {
                     type="button"
                     onClick={() => copyCode(u.id, u.joinCode)}
                     title="클릭하면 복사됩니다"
-                    className="flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 font-mono text-sm font-bold tracking-wider text-slate-700 transition-colors hover:bg-primary-50 hover:text-primary-700"
+                    className="flex items-center gap-2 rounded-xl bg-surface-2 px-3 py-2 font-mono text-sm font-bold tracking-wider text-ink transition-colors hover:bg-primary-50 hover:text-primary-700"
                   >
                     {u.joinCode}
                     {copiedId === u.id ? (
@@ -133,8 +133,8 @@ export function UnitsView() {
             {/* 부대 생성 (전체 관리자 전용) */}
             {isSuper && (
               <Card className="h-fit">
-                <p className="mb-1 font-bold text-slate-900">부대 생성</p>
-                <p className="mb-4 text-xs text-slate-400">
+                <p className="mb-1 font-bold text-ink">부대 생성</p>
+                <p className="mb-4 text-xs text-ink-faint">
                   생성하면 가입 코드가 자동 발급됩니다.
                 </p>
                 <form onSubmit={onCreate} className="flex flex-col gap-3">

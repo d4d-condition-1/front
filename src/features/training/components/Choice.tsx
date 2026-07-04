@@ -27,8 +27,8 @@ export function Choice({ label, index, selected, revealed, isAnswer, onClick }: 
         showCorrect && "border-emerald-500 bg-emerald-50 text-emerald-800",
         showWrong && "border-red-400 bg-red-50 text-red-700",
         !revealed && selected && "border-primary-500 bg-primary-50 text-primary-800",
-        !revealed && !selected && "border-slate-200 bg-white text-slate-700 hover:border-primary-300",
-        revealed && !isAnswer && !selected && "border-slate-200 bg-white text-slate-400",
+        !revealed && !selected && "border-line bg-surface text-ink hover:border-primary-300",
+        revealed && !isAnswer && !selected && "border-line bg-surface text-ink-faint",
       )}
     >
       <span
@@ -37,8 +37,8 @@ export function Choice({ label, index, selected, revealed, isAnswer, onClick }: 
           showCorrect && "bg-emerald-500 text-white",
           showWrong && "bg-red-400 text-white",
           !revealed && selected && "bg-primary-500 text-white",
-          !revealed && !selected && "bg-slate-100 text-slate-500",
-          revealed && !isAnswer && !selected && "bg-slate-100 text-slate-400",
+          !revealed && !selected && "bg-surface-2 text-ink-muted",
+          revealed && !isAnswer && !selected && "bg-surface-2 text-ink-faint",
         )}
       >
         {showCorrect ? <Icon name="check" size={16} /> : showWrong ? <Icon name="x" size={16} /> : LETTERS[index]}

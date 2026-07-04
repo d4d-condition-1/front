@@ -20,7 +20,7 @@ export function AppTabBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky bottom-0 z-20 border-t border-slate-100 bg-white/95 backdrop-blur">
+    <nav className="sticky bottom-0 z-20 border-t border-line bg-bg/95 backdrop-blur">
       <ul className="mx-auto flex max-w-md items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)]">
         {tabs.map((tab) => {
           const active =
@@ -33,7 +33,7 @@ export function AppTabBar() {
                 href={tab.href}
                 className={cn(
                   "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                  active ? "text-primary-600" : "text-slate-400",
+                  active ? "text-primary-600" : "text-ink-faint",
                 )}
               >
                 <Icon name={tab.icon} size={24} />

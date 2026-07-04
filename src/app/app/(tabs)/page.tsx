@@ -29,8 +29,8 @@ export default function AppHome() {
     <div className="flex flex-col gap-5 px-5 pb-6 pt-6">
       <header className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-slate-400">전투 숙달 가속기</p>
-          <h1 className="text-xl font-bold text-slate-900">
+          <p className="text-sm text-ink-faint">전투 숙달 가속기</p>
+          <h1 className="text-xl font-bold text-ink">
             {user ? `${user.name} 님` : " "}
           </h1>
         </div>
@@ -67,7 +67,7 @@ export default function AppHome() {
 
           {/* 레이더 차트 */}
           <Card className="flex flex-col items-center">
-            <p className="mb-1 w-full text-sm font-bold text-slate-900">역량 프로필</p>
+            <p className="mb-1 w-full text-sm font-bold text-ink">역량 프로필</p>
             <RadarChart data={toRadarData(scores)} size={280} />
           </Card>
 
@@ -79,8 +79,8 @@ export default function AppHome() {
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-red-500">약점 영역</p>
-                <p className="font-semibold text-slate-900">
-                  {weakCat.name} <span className="text-slate-400">({weak.score}점)</span>
+                <p className="font-semibold text-ink">
+                  {weakCat.name} <span className="text-ink-faint">({weak.score}점)</span>
                 </p>
               </div>
             </Card>
@@ -96,7 +96,7 @@ export default function AppHome() {
 
       <Link
         href="/app/diagnostic"
-        className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm font-semibold text-primary-600 ring-1 ring-primary-100"
+        className="flex items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 text-sm font-semibold text-primary-600 ring-1 ring-primary-100"
       >
         <Icon name="chart" size={18} /> 진단 테스트 다시 하기
       </Link>

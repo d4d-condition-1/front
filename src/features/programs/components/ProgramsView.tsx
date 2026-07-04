@@ -23,10 +23,10 @@ export function ProgramsView() {
     return (
       <div className="grid flex-1 place-items-center px-5 py-20 text-center">
         <div>
-          <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400">
+          <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-surface-2 text-ink-faint">
             <Icon name="list" size={24} />
           </div>
-          <p className="text-sm text-slate-400">배정된 커리큘럼이 아직 없습니다.</p>
+          <p className="text-sm text-ink-faint">배정된 커리큘럼이 아직 없습니다.</p>
         </div>
       </div>
     );
@@ -44,32 +44,32 @@ export function ProgramsView() {
                 </Badge>
                 {p.status === "done" && <Badge tone="slate">완료</Badge>}
               </div>
-              <p className="font-bold text-slate-900">{p.title}</p>
+              <p className="font-bold text-ink">{p.title}</p>
               {p.description && (
-                <p className="mt-0.5 text-sm text-slate-500">{p.description}</p>
+                <p className="mt-0.5 text-sm text-ink-muted">{p.description}</p>
               )}
             </div>
             <Icon
               name={p.kind === "fitness" ? "dumbbell" : "book"}
               size={22}
-              className="shrink-0 text-slate-300"
+              className="shrink-0 text-ink-faint"
             />
           </div>
 
           {p.items.length > 0 && (
-            <ul className="flex flex-col gap-1.5 rounded-xl bg-slate-50 p-3">
+            <ul className="flex flex-col gap-1.5 rounded-xl bg-bg p-3">
               {p.items.map((it, i) => (
                 <li key={i} className="flex items-baseline gap-2 text-sm">
                   <span className="text-primary-500">•</span>
-                  <span className="font-medium text-slate-700">{it.name}</span>
+                  <span className="font-medium text-ink">{it.name}</span>
                   {(it.sets || it.reps) && (
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-ink-faint">
                       {it.sets ? `${it.sets}세트` : ""}
                       {it.sets && it.reps ? " x " : ""}
                       {it.reps ? `${it.reps}회` : ""}
                     </span>
                   )}
-                  {it.detail && <span className="text-xs text-slate-400">— {it.detail}</span>}
+                  {it.detail && <span className="text-xs text-ink-faint">— {it.detail}</span>}
                 </li>
               ))}
             </ul>

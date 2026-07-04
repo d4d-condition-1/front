@@ -70,7 +70,7 @@ export function AuthCard() {
         </p>
         <Link
           href={dest}
-          className="rounded-xl bg-white py-3 text-center font-bold text-primary-700 transition-transform hover:scale-[1.01]"
+          className="rounded-xl bg-white py-3 text-center font-bold text-primary-800 transition-transform hover:scale-[1.01]"
         >
           {destLabel}로 이동
         </Link>
@@ -96,7 +96,7 @@ export function AuthCard() {
             className={cn(
               "rounded-lg py-2 text-sm font-semibold transition-colors",
               mode === m
-                ? "bg-white text-primary-700"
+                ? "bg-white text-primary-800"
                 : "text-primary-100 hover:text-white",
             )}
           >
@@ -164,7 +164,7 @@ export function AuthCard() {
                   className={cn(
                     "rounded-lg py-2 text-xs font-semibold transition-colors",
                     signupRole === value
-                      ? "bg-white text-primary-700"
+                      ? "bg-white text-primary-800"
                       : "text-primary-100 hover:text-white",
                   )}
                 >

@@ -38,7 +38,7 @@ export function RecommendCards() {
     <section className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <Icon name="flame" size={18} className="text-primary-600" />
-        <h2 className="text-sm font-bold text-slate-900">오늘의 추천 훈련</h2>
+        <h2 className="text-sm font-bold text-ink">오늘의 추천 훈련</h2>
       </div>
 
       <div className="flex flex-col gap-2.5">
@@ -48,14 +48,14 @@ export function RecommendCards() {
             <Link
               key={i}
               href={c.link}
-              className="flex items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-slate-100 transition-colors hover:bg-slate-50"
+              className="flex items-center gap-3 rounded-2xl bg-surface p-4 ring-1 ring-line transition-colors hover:bg-surface-2"
             >
               <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-xl", m.tone)}>
                 <Icon name={m.icon} size={22} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-slate-800">{c.title}</p>
-                <p className="truncate text-xs text-slate-500">{c.reason}</p>
+                <p className="truncate font-semibold text-ink">{c.title}</p>
+                <p className="truncate text-xs text-ink-muted">{c.reason}</p>
               </div>
               <span className="flex shrink-0 items-center gap-0.5 text-sm font-semibold text-primary-600">
                 {c.cta}

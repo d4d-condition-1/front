@@ -9,7 +9,7 @@ import { useAdminPrograms } from "../hooks/useAdminPrograms";
 import type { ProgramItem } from "../api/adminProgramApi";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100";
+  "w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100";
 
 const FIT_EVENTS = [
   { code: "pushup", name: "팔굽혀펴기" },
@@ -71,16 +71,16 @@ export function ProgramsManager() {
       <div className="grid gap-6 p-6 md:grid-cols-[1fr_1.2fr] md:p-8">
         {/* 작성 폼 */}
         <Card className="flex flex-col gap-3">
-          <p className="font-bold text-slate-900">새 프로그램</p>
+          <p className="font-bold text-ink">새 프로그램</p>
 
-          <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-surface-2 p-1">
             {(["fitness", "education"] as const).map((k) => (
               <button
                 key={k}
                 type="button"
                 onClick={() => setKind(k)}
                 className={`rounded-lg py-2 text-sm font-semibold transition-colors ${
-                  kind === k ? "bg-white text-primary-700 shadow-sm" : "text-slate-500"
+                  kind === k ? "bg-surface text-primary-700 shadow-sm" : "text-ink-muted"
                 }`}
               >
                 {k === "fitness" ? "운동" : "교육"}
@@ -118,7 +118,7 @@ export function ProgramsManager() {
           )}
 
           <div className="flex flex-col gap-2">
-            <p className="text-xs font-semibold text-slate-500">세부 항목</p>
+            <p className="text-xs font-semibold text-ink-muted">세부 항목</p>
             {items.map((it, i) => (
               <div key={i} className="flex gap-2">
                 <input
@@ -132,14 +132,14 @@ export function ProgramsManager() {
                   value={it.sets ?? ""}
                   onChange={(e) => setItem(i, { sets: e.target.value ? Number(e.target.value) : null })}
                   placeholder="세트"
-                  className="w-20 rounded-xl border border-slate-200 px-2 py-2.5 text-sm outline-none focus:border-primary-400"
+                  className="w-20 rounded-xl border border-line px-2 py-2.5 text-sm outline-none focus:border-primary-400"
                 />
                 <input
                   type="number"
                   value={it.reps ?? ""}
                   onChange={(e) => setItem(i, { reps: e.target.value ? Number(e.target.value) : null })}
                   placeholder="횟수"
-                  className="w-20 rounded-xl border border-slate-200 px-2 py-2.5 text-sm outline-none focus:border-primary-400"
+                  className="w-20 rounded-xl border border-line px-2 py-2.5 text-sm outline-none focus:border-primary-400"
                 />
               </div>
             ))}
@@ -180,11 +180,11 @@ export function ProgramsManager() {
                     </Badge>
                     <Badge tone="slate">{p.unitName ?? "전체"}</Badge>
                   </div>
-                  <p className="font-bold text-slate-900">{p.title}</p>
+                  <p className="font-bold text-ink">{p.title}</p>
                   {p.description && (
-                    <p className="mt-0.5 text-sm text-slate-500">{p.description}</p>
+                    <p className="mt-0.5 text-sm text-ink-muted">{p.description}</p>
                   )}
-                  <p className="mt-1 text-xs text-slate-400">{p.items.length}개 항목</p>
+                  <p className="mt-1 text-xs text-ink-faint">{p.items.length}개 항목</p>
                 </div>
                 <Button variant="danger" size="sm" onClick={() => remove(p.id)}>
                   삭제

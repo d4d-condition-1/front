@@ -31,13 +31,13 @@ export function AppNavBar() {
   if (IMMERSIVE.some((p) => pathname.startsWith(p))) return null;
 
   return (
-    <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-100 bg-white/90 px-2 py-2 backdrop-blur">
+    <div className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-white/90 px-2 py-2 backdrop-blur">
       <div className="flex items-center gap-1">
         <button
           type="button"
           onClick={() => router.back()}
           aria-label="뒤로 가기"
-          className="grid h-9 w-9 place-items-center rounded-full text-slate-600 transition-colors hover:bg-slate-100 active:scale-95"
+          className="grid h-9 w-9 place-items-center rounded-full text-ink-muted transition-colors hover:bg-surface-2 active:scale-95"
         >
           <Icon name="chevronLeft" size={22} />
         </button>
@@ -45,13 +45,13 @@ export function AppNavBar() {
           type="button"
           onClick={() => router.forward()}
           aria-label="앞으로 가기"
-          className="grid h-9 w-9 place-items-center rounded-full text-slate-600 transition-colors hover:bg-slate-100 active:scale-95"
+          className="grid h-9 w-9 place-items-center rounded-full text-ink-muted transition-colors hover:bg-surface-2 active:scale-95"
         >
           <Icon name="chevronRight" size={22} />
         </button>
       </div>
 
-      <span className="text-sm font-semibold text-slate-700">{title}</span>
+      <span className="text-sm font-semibold text-ink">{title}</span>
 
       <NotificationBell />
     </div>

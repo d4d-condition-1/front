@@ -12,7 +12,7 @@ const typeTone: Record<string, string> = {
   program: "bg-primary-100 text-primary-700",
   assignment: "bg-amber-100 text-amber-700",
   chat: "bg-sky-100 text-sky-700",
-  system: "bg-slate-100 text-slate-600",
+  system: "bg-surface-2 text-ink-muted",
 };
 
 /** 헤더용 알림 벨 — 안읽음 뱃지 + 드롭다운 목록. WS 로 실시간 갱신된다. */
@@ -45,7 +45,7 @@ export function NotificationBell({ dark = false }: { dark?: boolean }) {
         aria-label={`알림 ${unread}건`}
         className={cn(
           "relative grid h-10 w-10 place-items-center rounded-full transition-colors",
-          dark ? "text-white hover:bg-white/10" : "text-slate-600 hover:bg-slate-100",
+          dark ? "text-white hover:bg-white/10" : "text-ink-muted hover:bg-surface-2",
         )}
       >
         <Icon name="bell" size={22} />
@@ -57,12 +57,12 @@ export function NotificationBell({ dark = false }: { dark?: boolean }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-slate-200">
-          <div className="border-b border-slate-100 px-4 py-3">
-            <p className="text-sm font-bold text-slate-900">알림</p>
+        <div className="absolute right-0 z-30 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-surface shadow-lg ring-1 ring-line">
+          <div className="border-b border-line px-4 py-3">
+            <p className="text-sm font-bold text-ink">알림</p>
           </div>
           {items.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-slate-400">
+            <p className="px-4 py-8 text-center text-sm text-ink-faint">
               새 알림이 없습니다.
             </p>
           ) : (
@@ -71,7 +71,7 @@ export function NotificationBell({ dark = false }: { dark?: boolean }) {
                 const inner = (
                   <div
                     className={cn(
-                      "flex gap-3 px-4 py-3 transition-colors hover:bg-slate-50",
+                      "flex gap-3 px-4 py-3 transition-colors hover:bg-surface-2",
                       !n.read && "bg-primary-50/40",
                     )}
                   >
@@ -91,18 +91,18 @@ export function NotificationBell({ dark = false }: { dark?: boolean }) {
                         >
                           {n.type}
                         </span>
-                        <p className="truncate text-sm font-semibold text-slate-800">
+                        <p className="truncate text-sm font-semibold text-ink">
                           {n.title}
                         </p>
                       </div>
                       {n.body && (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">{n.body}</p>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-ink-muted">{n.body}</p>
                       )}
                     </div>
                   </div>
                 );
                 return (
-                  <li key={n.id} className="border-b border-slate-50 last:border-0">
+                  <li key={n.id} className="border-b border-line last:border-0">
                     {n.link ? (
                       <Link href={n.link} onClick={() => setOpen(false)}>
                         {inner}

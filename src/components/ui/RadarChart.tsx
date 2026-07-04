@@ -70,7 +70,7 @@ export function RadarChart({ data, size = 260, color = "var(--color-primary-600)
             y={p.y}
             textAnchor="middle"
             dominantBaseline="middle"
-            className="fill-slate-500"
+            className="fill-ink-muted"
             fontSize={11}
             fontWeight={600}
           >

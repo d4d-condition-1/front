@@ -2,14 +2,16 @@ import type { HTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
 
-type Tone = "primary" | "green" | "amber" | "slate" | "red";
+type Tone = "primary" | "green" | "amber" | "slate" | "red" | "signal";
 
+/** 다크 전술 칩 — 반투명 틴트 + 밝은 텍스트. */
 const tones: Record<Tone, string> = {
-  primary: "bg-primary-50 text-primary-700",
-  green: "bg-emerald-50 text-emerald-700",
-  amber: "bg-amber-50 text-amber-700",
-  slate: "bg-slate-100 text-slate-600",
-  red: "bg-red-50 text-red-600",
+  primary: "bg-primary-500/15 text-primary-300",
+  green: "bg-emerald-500/15 text-emerald-300",
+  amber: "bg-amber-500/15 text-amber-300",
+  signal: "bg-signal-300/15 text-signal-300",
+  slate: "bg-surface-2 text-ink-muted",
+  red: "bg-red-500/15 text-red-300",
 };
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {

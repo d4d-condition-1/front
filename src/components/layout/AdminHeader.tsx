@@ -11,10 +11,10 @@ export function AdminHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5 md:px-8">
+    <header className="flex items-center justify-between border-b border-line bg-surface px-6 py-5 md:px-8">
       <div>
-        <h1 className="text-lg font-bold text-slate-900">{title}</h1>
-        {description && <p className="mt-0.5 text-sm text-slate-400">{description}</p>}
+        <h1 className="text-lg font-bold text-ink">{title}</h1>
+        {description && <p className="mt-0.5 text-sm text-ink-faint">{description}</p>}
       </div>
       {action}
     </header>

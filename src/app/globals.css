@@ -1,8 +1,26 @@
 @import "tailwindcss";
 
+/* ── D4D 풀 다크 전술(Tactical) 테마 ──
+   건메탈/올리브 다크 배경 + 시그널 앰버 포인트 + 모노 수치.
+   시맨틱 토큰(bg/surface/line/ink)으로 화면 전반을 한 곳에서 제어한다. */
+
 :root {
-  --background: #f4f5f0; /* 옅은 카키 화이트 */
-  --foreground: #191c14; /* 다크 올리브 블랙 */
+  color-scheme: dark;
+
+  /* 표면 계층 */
+  --color-bg: #0e1311; /* 페이지 최하단 (건메탈 블랙) */
+  --color-surface: #161c18; /* 카드/패널 */
+  --color-surface-2: #1c231e; /* 강조 표면/호버 */
+  --color-line: #27302a; /* 기본 헤어라인 */
+  --color-line-strong: #36412f; /* 강조 보더 */
+
+  /* 잉크(텍스트) 계층 */
+  --color-ink: #dce1d0; /* 본문 (본 화이트) */
+  --color-ink-muted: #8b9279; /* 보조 */
+  --color-ink-faint: #5f6857; /* 힌트/비활성 */
+
+  --background: var(--color-bg);
+  --foreground: var(--color-ink);
 }
 
 @theme inline {
@@ -12,36 +30,67 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* ── D4D 밀리터리 디자인 토큰 ──
-   primary: 올리브/아미 그린 (브랜드·주 액션)
-   보조 시맨틱: emerald(성공) · amber(주의/시그널) · red(위험) · slate(중립)
-   라디우스: 기본보다 한 단계 각지게 — 전술 장비 실루엣 */
 @theme {
+  /* 표면·잉크 토큰을 Tailwind 유틸로 노출 (bg-surface, text-ink, border-line …) */
+  --color-bg: #0e1311;
+  --color-surface: #161c18;
+  --color-surface-2: #1c231e;
+  --color-line: #27302a;
+  --color-line-strong: #36412f;
+  --color-ink: #dce1d0;
+  --color-ink-muted: #8b9279;
+  --color-ink-faint: #5f6857;
+
+  /* primary = 올리브/아미 그린 (브랜드·주 액션) */
   --color-primary-50: #f5f7ee;
   --color-primary-100: #e8edd8;
   --color-primary-200: #d2dcb5;
   --color-primary-300: #b4c58a;
   --color-primary-400: #96ad64;
-  --color-primary-500: #789246;
-  --color-primary-600: #5c7335; /* 주 브랜드 (버튼/활성) */
-  --color-primary-700: #47592b;
-  --color-primary-800: #3b4926;
-  --color-primary-900: #333e23;
+  --color-primary-500: #7fa346;
+  --color-primary-600: #6a8b3a; /* 주 브랜드 (다크 위에서 밝게) */
+  --color-primary-700: #55742f;
+  --color-primary-800: #435a27;
+  --color-primary-900: #364823;
   --color-primary-950: #1a2110;
 
+  /* signal = 전술 앰버 (핵심 CTA·경보·하이라이트 포인트) */
+  --color-signal-50: #fbf1dc;
+  --color-signal-100: #f6dfae;
+  --color-signal-200: #efc978;
+  --color-signal-300: #e8b24c;
+  --color-signal-400: #dd9c2e;
+  --color-signal-500: #c6851f;
+  --color-signal-600: #a06713;
+  --color-signal-700: #7c4f0e;
+
+  /* 각진 실루엣 — 전술 장비 느낌 */
   --radius-lg: 0.375rem;
   --radius-xl: 0.5rem;
-  --radius-2xl: 0.75rem;
-  --radius-3xl: 1rem;
+  --radius-2xl: 0.625rem;
+  --radius-3xl: 0.875rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* 모바일 앱 셸 스크롤바 숨김 (산타토익 느낌) */
+/* 미세 전술 그리드 텍스처 (배경 셸에 사용) */
+.tactical-grid {
+  background-image:
+    repeating-linear-gradient(0deg, rgba(127, 163, 70, 0.04) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(127, 163, 70, 0.04) 0 1px, transparent 1px 22px);
+}
+
+/* 모노 수치 (점수·좌표·코드) */
+.tabular {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 모바일 앱 셸 스크롤바 숨김 */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

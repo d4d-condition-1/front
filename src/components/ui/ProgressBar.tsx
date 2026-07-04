@@ -10,7 +10,7 @@ interface ProgressBarProps {
 export function ProgressBar({ value, className, barClassName }: ProgressBarProps) {
   const pct = Math.max(0, Math.min(100, value));
   return (
-    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-slate-100", className)}>
+    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-surface-2", className)}>
       <div
         className={cn("h-full rounded-full bg-primary-600 transition-all", barClassName)}
         style={{ width: `${pct}%` }}

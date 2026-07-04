@@ -53,10 +53,10 @@ export function AccountsView() {
         ) : error ? (
           <AdminStatus message={error.message} isError />
         ) : (
-          <div className="overflow-x-auto rounded-2xl bg-white ring-1 ring-slate-100">
+          <div className="overflow-x-auto rounded-2xl bg-surface ring-1 ring-line">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 text-xs text-slate-400">
+                <tr className="border-b border-line text-xs text-ink-faint">
                   <th className="px-5 py-3 font-medium">계정</th>
                   <th className="px-5 py-3 font-medium">계급 / 소속</th>
                   <th className="px-5 py-3 font-medium">역할</th>
@@ -69,7 +69,7 @@ export function AccountsView() {
                 {accounts.map((a) => (
                   <tr
                     key={a.id}
-                    className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60"
+                    className="border-b border-line last:border-0 hover:bg-surface-2/60"
                   >
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
@@ -77,7 +77,7 @@ export function AccountsView() {
                           {a.name.slice(0, 1)}
                         </span>
                         <div>
-                          <p className="font-semibold text-slate-800">
+                          <p className="font-semibold text-ink">
                             {a.name}
                             {a.isSelf && (
                               <span className="ml-1.5 text-xs font-medium text-primary-500">
@@ -85,11 +85,11 @@ export function AccountsView() {
                               </span>
                             )}
                           </p>
-                          <p className="text-xs text-slate-400">{a.loginId}</p>
+                          <p className="text-xs text-ink-faint">{a.loginId}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3 text-slate-600">
+                    <td className="px-5 py-3 text-ink-muted">
                       {[a.rank, a.unit].filter(Boolean).join(" / ") || "-"}
                     </td>
                     <td className="px-5 py-3">
@@ -97,11 +97,11 @@ export function AccountsView() {
                         {a.role === "admin" ? "관리자" : "장병"}
                       </Badge>
                     </td>
-                    <td className="px-5 py-3 text-slate-500">{a.createdAt}</td>
-                    <td className="px-5 py-3 text-slate-400">{a.lastActive}</td>
+                    <td className="px-5 py-3 text-ink-muted">{a.createdAt}</td>
+                    <td className="px-5 py-3 text-ink-faint">{a.lastActive}</td>
                     <td className="px-5 py-3">
                       {a.isSelf ? (
-                        <span className="text-xs text-slate-300">변경 불가</span>
+                        <span className="text-xs text-ink-faint">변경 불가</span>
                       ) : a.role === "admin" ? (
                         <Button
                           size="sm"
