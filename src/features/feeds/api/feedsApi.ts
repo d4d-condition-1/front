@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/api";
 import type { CategoryCode } from "@/features/categories";
 
-export type ChannelType = "telegram" | "rss" | "web" | "youtube";
+export type ChannelType = "telegram" | "rss" | "web" | "youtube" | "api";
 
 export interface FeedChannel {
   id: string;
@@ -75,6 +75,20 @@ export function fetchChannelArticles(
   return apiFetch<{ inserted: number }>(`/api/admin/feeds/channels/${channelId}/fetch`, {
     method: "POST",
     body: JSON.stringify(opts ?? {}),
+  });
+}
+
+export function createArticle(input: {
+  title: string;
+  body?: string;
+  bodyHtml?: string;
+  images?: string[];
+  sourceUrl?: string;
+  channelId?: string;
+}): Promise<FeedArticle> {
+  return apiFetch<FeedArticle>("/api/admin/feeds/articles", {
+    method: "POST",
+    body: JSON.stringify(input),
   });
 }
 

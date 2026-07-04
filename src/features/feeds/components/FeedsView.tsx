@@ -10,6 +10,7 @@ import {
   updateChannel,
   deleteChannel,
   fetchChannelArticles,
+  createArticle,
   fetchArticles,
   archiveArticle,
   deleteArticle,
@@ -27,6 +28,7 @@ const TYPE_LABELS: Record<ChannelType, string> = {
   rss: "RSS",
   web: "웹 페이지",
   youtube: "YouTube",
+  api: "커스텀 API",
 };
 
 const TYPE_TONES: Record<ChannelType, "primary" | "green" | "amber" | "red"> = {
@@ -34,6 +36,7 @@ const TYPE_TONES: Record<ChannelType, "primary" | "green" | "amber" | "red"> = {
   rss: "green",
   web: "amber",
   youtube: "red",
+  api: "primary",
 };
 
 type Tab = "channels" | "articles" | "archived";
@@ -75,6 +78,13 @@ export function FeedsView() {
   const [editUntil, setEditUntil] = useState("");
   const [editMaxPages, setEditMaxPages] = useState("5");
   const [saving, setSaving] = useState(false);
+
+  // 수동 아티클 등록
+  const [showManualForm, setShowManualForm] = useState(false);
+  const [manualTitle, setManualTitle] = useState("");
+  const [manualBody, setManualBody] = useState("");
+  const [manualUrl, setManualUrl] = useState("");
+  const [manualAdding, setManualAdding] = useState(false);
 
   // 아티클 상세
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -144,6 +154,26 @@ export function FeedsView() {
     setEditSince(ch.fetchSince);
     setEditUntil(ch.fetchUntil);
     setEditMaxPages(String(ch.maxPages || 5));
+  }
+
+  async function onAddManualArticle() {
+    if (!manualTitle.trim()) return;
+    setManualAdding(true);
+    try {
+      const isHtml = manualBody.includes("<") && manualBody.includes(">");
+      const article = await createArticle({
+        title: manualTitle.trim(),
+        body: isHtml ? undefined : manualBody.trim(),
+        bodyHtml: isHtml ? manualBody.trim() : undefined,
+        sourceUrl: manualUrl.trim() || undefined,
+      });
+      setArticles((prev) => [article, ...prev]);
+      setShowManualForm(false);
+      setManualTitle("");
+      setManualBody("");
+      setManualUrl("");
+    } catch { /* ignore */ }
+    finally { setManualAdding(false); }
   }
 
   async function onSaveChannel(id: string) {
@@ -263,8 +293,8 @@ export function FeedsView() {
           {showAddForm && (
             <Card className="flex flex-col gap-3">
               <p className="font-bold text-ink">새 채널 등록</p>
-              <div className="grid grid-cols-4 gap-1 rounded-xl bg-surface-2 p-1">
-                {(["rss", "telegram", "web", "youtube"] as const).map((t) => (
+              <div className="grid grid-cols-5 gap-1 rounded-xl bg-surface-2 p-1">
+                {(["rss", "telegram", "web", "youtube", "api"] as const).map((t) => (
                   <button
                     key={t}
                     type="button"
@@ -293,7 +323,9 @@ export function FeedsView() {
                       ? "https://example.com/feed.xml"
                       : newType === "youtube"
                         ? "https://www.youtube.com/@채널 또는 /channel/ID (키워드 검색 시 비워도 됨)"
-                        : "https://example.com/article"
+                        : newType === "api"
+                          ? "https://your-api.com/articles (JSON 응답 필요)"
+                          : "https://example.com/article"
                 }
                 className={inputCls}
               />
@@ -548,13 +580,56 @@ export function FeedsView() {
       {/* ── 수집 아티클 / 아카이브 ── */}
       {(tab === "articles" || tab === "archived") && (
         <div className="space-y-3">
-          <p className="text-sm text-ink-muted">
-            {articles.length}건{tab === "archived" ? " (아카이브)" : ""}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-ink-muted">
+              {articles.length}건{tab === "archived" ? " (아카이브)" : ""}
+            </p>
+            {tab === "articles" && (
+              <Button size="sm" onClick={() => setShowManualForm(!showManualForm)}>
+                <Icon name="plus" size={16} /> 직접 등록
+              </Button>
+            )}
+          </div>
 
-          {articles.length === 0 && (
+          {showManualForm && tab === "articles" && (
+            <Card className="flex flex-col gap-3">
+              <p className="font-bold text-ink">수동 아티클 등록</p>
+              <p className="text-xs text-ink-muted">
+                스크래핑이 안 되는 경우 직접 제목과 본문을 붙여넣을 수 있습니다. HTML도 지원합니다.
+              </p>
+              <input
+                value={manualTitle}
+                onChange={(e) => setManualTitle(e.target.value)}
+                placeholder="제목"
+                className={inputCls}
+              />
+              <textarea
+                value={manualBody}
+                onChange={(e) => setManualBody(e.target.value)}
+                placeholder="본문 (텍스트 또는 HTML)"
+                rows={6}
+                className={inputCls + " resize-y"}
+              />
+              <input
+                value={manualUrl}
+                onChange={(e) => setManualUrl(e.target.value)}
+                placeholder="원본 URL (선택)"
+                className={inputCls}
+              />
+              <div className="flex gap-2">
+                <Button onClick={onAddManualArticle} loading={manualAdding} className="flex-1">
+                  등록
+                </Button>
+                <Button variant="secondary" onClick={() => setShowManualForm(false)}>
+                  취소
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          {articles.length === 0 && !showManualForm && (
             <Card className="py-12 text-center text-sm text-ink-muted">
-              {tab === "archived" ? "아카이브된 아티클이 없습니다." : "수집된 아티클이 없습니다. 채널에서 수집하세요."}
+              {tab === "archived" ? "아카이브된 아티클이 없습니다." : "수집된 아티클이 없습니다. 채널에서 수집하거나 직접 등록하세요."}
             </Card>
           )}
 
