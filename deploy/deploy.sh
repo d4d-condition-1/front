@@ -12,7 +12,7 @@ IMAGE="d4d-front:latest"        # 빌드할 이미지 태그
 CONTAINER="d4d-front"           # 실행할 컨테이너 이름
 NETWORK="docker_default"        # 연결할 네트워크
 IP="172.23.0.4"                 # 고정 IP
-PORT="3000"                     # 노출 포트
+PORT="9555"                     # 노출 포트
 BRANCH="${DEPLOY_BRANCH:-main}" # 배포 브랜치 (.env 의 DEPLOY_BRANCH 우선)
 
 # 중복 배포 방지 (겹친 요청은 건너뜀)
