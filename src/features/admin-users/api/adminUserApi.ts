@@ -1,28 +1,26 @@
-// 프론트 전용 mock 사용자 데이터 (관리자용).
-export type UserStatus = "활성" | "비활성";
-export type UserPlan = "무료" | "프리미엄";
+// 프론트 전용 mock 장병 데이터 (관리자용).
+import { gradeOf, type Grade } from "@/features/categories";
 
-export interface AdminUser {
+export interface Trainee {
   id: string;
   name: string;
-  email: string;
-  plan: UserPlan;
-  status: UserStatus;
-  targetScore: number;
+  rank: string; // 계급
+  unit: string; // 소속
+  score: number; // 종합 숙련도 0~100
+  grade: Grade;
   solved: number;
-  joinedAt: string;
   lastActive: string;
 }
 
-const USERS: AdminUser[] = [
-  { id: "u1", name: "김학생", email: "student.kim@example.com", plan: "프리미엄", status: "활성", targetScore: 850, solved: 342, joinedAt: "2026-03-12", lastActive: "5분 전" },
-  { id: "u2", name: "이토익", email: "toeic.lee@example.com", plan: "무료", status: "활성", targetScore: 700, solved: 88, joinedAt: "2026-04-01", lastActive: "2시간 전" },
-  { id: "u3", name: "박준영", email: "jy.park@example.com", plan: "프리미엄", status: "활성", targetScore: 900, solved: 512, joinedAt: "2026-02-20", lastActive: "어제" },
-  { id: "u4", name: "최민지", email: "minji.choi@example.com", plan: "무료", status: "비활성", targetScore: 600, solved: 24, joinedAt: "2026-05-08", lastActive: "3일 전" },
-  { id: "u5", name: "정하늘", email: "haneul.jung@example.com", plan: "프리미엄", status: "활성", targetScore: 800, solved: 267, joinedAt: "2026-03-30", lastActive: "1시간 전" },
-  { id: "u6", name: "강도윤", email: "doyun.kang@example.com", plan: "무료", status: "비활성", targetScore: 650, solved: 5, joinedAt: "2026-06-15", lastActive: "2주 전" },
+const RAW: Omit<Trainee, "grade">[] = [
+  { id: "u1", name: "김일병", rank: "일병", unit: "1소대 3분대", score: 62, solved: 216, lastActive: "5분 전" },
+  { id: "u2", name: "이상병", rank: "상병", unit: "1소대 2분대", score: 78, solved: 402, lastActive: "1시간 전" },
+  { id: "u3", name: "박병장", rank: "병장", unit: "2소대 1분대", score: 91, solved: 588, lastActive: "어제" },
+  { id: "u4", name: "최이병", rank: "이병", unit: "2소대 3분대", score: 38, solved: 41, lastActive: "3일 전" },
+  { id: "u5", name: "정하사", rank: "하사", unit: "화기소대", score: 84, solved: 470, lastActive: "2시간 전" },
+  { id: "u6", name: "강일병", rank: "일병", unit: "3소대 1분대", score: 47, solved: 96, lastActive: "1일 전" },
 ];
 
-export function getAdminUsers(): AdminUser[] {
-  return USERS;
+export function getTrainees(): Trainee[] {
+  return RAW.map((t) => ({ ...t, grade: gradeOf(t.score) }));
 }

@@ -1,37 +1,35 @@
 import Link from "next/link";
 
 import { Badge, Card, Icon, type IconName } from "@/components/ui";
-import { getStats } from "@/features/report";
+import { getMyScores, gradeOf, overallScore } from "@/features/categories";
 
 const menu: { label: string; icon: IconName }[] = [
-  { label: "학습 목표 설정", icon: "target" },
-  { label: "알림 설정", icon: "clock" },
-  { label: "학습 기록", icon: "chart" },
+  { label: "진단 테스트 다시 하기", icon: "chart" },
+  { label: "훈련 목표 설정", icon: "target" },
+  { label: "학습 기록", icon: "clock" },
   { label: "설정", icon: "settings" },
 ];
 
 export default function ProfilePage() {
-  const stats = getStats();
+  const overall = overallScore(getMyScores());
 
   return (
     <div className="flex flex-col gap-4 px-5 pb-6 pt-6">
       <h1 className="text-xl font-bold text-slate-900">프로필</h1>
 
-      {/* 프로필 카드 */}
       <Card className="flex items-center gap-4">
         <span className="grid h-14 w-14 place-items-center rounded-full bg-indigo-100 text-lg font-bold text-indigo-700">
-          학
+          김
         </span>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="font-bold text-slate-900">학습자님</p>
-            <Badge tone="indigo">프리미엄</Badge>
+            <p className="font-bold text-slate-900">김일병</p>
+            <Badge tone="indigo">등급 {gradeOf(overall)}</Badge>
           </div>
-          <p className="text-xs text-slate-400">목표 850점 · 예상 {stats.predictedScore}점</p>
+          <p className="text-xs text-slate-400">1소대 3분대 · 종합 {overall}점</p>
         </div>
       </Card>
 
-      {/* 메뉴 */}
       <Card className="divide-y divide-slate-50 p-0">
         {menu.map((m) => (
           <button

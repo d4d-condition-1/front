@@ -10,9 +10,9 @@ export default function LandingPage() {
           <span className="mb-4 inline-grid h-16 w-16 place-items-center rounded-2xl bg-white/15 text-2xl font-black backdrop-blur">
             D4D
           </span>
-          <h1 className="text-2xl font-bold">AI 기반 TOEIC 학습</h1>
+          <h1 className="text-2xl font-bold">전투 숙달 가속 시뮬레이터</h1>
           <p className="mt-2 text-sm text-indigo-100">
-            학습자료를 풀고, AI가 분석해 관리해 드립니다.
+            AI가 장병의 약점을 진단하고 맞춤형 전술 훈련을 제공합니다.
           </p>
         </div>
 
@@ -25,8 +25,8 @@ export default function LandingPage() {
               <Icon name="play" size={24} />
             </span>
             <span className="flex-1">
-              <span className="block font-bold">학습 시작하기</span>
-              <span className="block text-xs text-slate-400">사용자 앱 (모바일)</span>
+              <span className="block font-bold">훈련 시작하기</span>
+              <span className="block text-xs text-slate-400">장병 앱 (모바일)</span>
             </span>
             <Icon name="chevronRight" size={20} className="text-slate-300" />
           </Link>

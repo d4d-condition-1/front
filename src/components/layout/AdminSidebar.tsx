@@ -7,10 +7,10 @@ import { Icon, type IconName } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 const items: { href: string; label: string; icon: IconName }[] = [
-  { href: "/admin", label: "대시보드", icon: "chart" },
-  { href: "/admin/users", label: "사용자 관리", icon: "users" },
+  { href: "/admin", label: "부대 현황", icon: "chart" },
+  { href: "/admin/users", label: "장병 관리", icon: "users" },
   { href: "/admin/ai", label: "AI 연동", icon: "cpu" },
-  { href: "/admin/materials", label: "학습자료", icon: "book" },
+  { href: "/admin/materials", label: "학습 자료", icon: "book" },
 ];
 
 /** 관리자 콘솔 사이드바. */

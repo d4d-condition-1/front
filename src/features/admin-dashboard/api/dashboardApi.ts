@@ -1,23 +1,31 @@
-// 프론트 전용 mock: 관리자 대시보드 지표.
+// 프론트 전용 mock: 관리자 대시보드 — 부대 전체 현황.
 export interface DashboardStats {
-  totalUsers: number;
-  activeToday: number;
-  solvedToday: number;
+  totalTrainees: number;
+  avgProficiency: number;
+  trainedToday: number;
   aiRequests: number;
+  gradeDist: { grade: string; count: number }[];
   recentActivity: { user: string; action: string; time: string }[];
 }
 
 const DASHBOARD: DashboardStats = {
-  totalUsers: 1284,
-  activeToday: 213,
-  solvedToday: 4820,
+  totalTrainees: 128,
+  avgProficiency: 64,
+  trainedToday: 83,
   aiRequests: 19570,
+  gradeDist: [
+    { grade: "S", count: 8 },
+    { grade: "A", count: 27 },
+    { grade: "B", count: 44 },
+    { grade: "C", count: 35 },
+    { grade: "D", count: 14 },
+  ],
   recentActivity: [
-    { user: "김학생", action: "Part 5 · 문법 100제 완료 (18/20)", time: "5분 전" },
-    { user: "정하늘", action: "Part 3 · 대화 문제 실전 시작", time: "22분 전" },
-    { user: "이토익", action: "회원가입 (무료 플랜)", time: "1시간 전" },
-    { user: "박준영", action: "예상 점수 785 → 800 상승", time: "2시간 전" },
-    { user: "최민지", action: "Part 7 · 단일 지문 독해 완료 (6/10)", time: "3시간 전" },
+    { user: "박병장", action: "전술기동 훈련 완료 (8/8) · 등급 A 유지", time: "5분 전" },
+    { user: "정하사", action: "화력운용 점수 78 → 84 상승", time: "22분 전" },
+    { user: "최이병", action: "진단 테스트 완료 · 초기 등급 D", time: "1시간 전" },
+    { user: "김일병", action: "화생방 약점 집중 훈련 시작", time: "2시간 전" },
+    { user: "이상병", action: "전장응급처치 Lv.4 문항 정답", time: "3시간 전" },
   ],
 };
 

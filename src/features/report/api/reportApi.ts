@@ -1,47 +1,62 @@
-// 프론트 전용 mock 통계 데이터.
-export interface PartAccuracy {
-  part: string;
-  accuracy: number; // 0~100
+// 프론트 전용 mock: 학습 통계 + 강점/약점 분석.
+import {
+  getCategory,
+  getMyScores,
+  levelForScore,
+  type CategoryScore,
+} from "@/features/categories";
+
+export interface TrainingStats {
+  totalSolved: number;
+  avgResponseSec: number;
+  bestStreak: number;
+  overallAccuracy: number;
 }
 
-export interface Stats {
-  predictedScore: number; // 예상 점수 (990 만점)
-  lcScore: number;
-  rcScore: number;
-  accuracy: number;
-  streak: number; // 연속 학습일
-  weeklyMinutes: number;
-  solvedTotal: number;
-  history: { label: string; score: number }[]; // 점수 추이
-  byPart: PartAccuracy[];
+export function getTrainingStats(): TrainingStats {
+  const scores = getMyScores();
+  const attempts = scores.reduce((s, c) => s + c.attempts, 0);
+  const correct = scores.reduce((s, c) => s + c.correct, 0);
+  return {
+    totalSolved: attempts,
+    avgResponseSec: 24,
+    bestStreak: 12,
+    overallAccuracy: Math.round((correct / attempts) * 100),
+  };
 }
 
-const STATS: Stats = {
-  predictedScore: 785,
-  lcScore: 420,
-  rcScore: 365,
-  accuracy: 72,
-  streak: 6,
-  weeklyMinutes: 180,
-  solvedTotal: 342,
-  history: [
-    { label: "1주", score: 680 },
-    { label: "2주", score: 710 },
-    { label: "3주", score: 705 },
-    { label: "4주", score: 745 },
-    { label: "5주", score: 760 },
-    { label: "6주", score: 785 },
-  ],
-  byPart: [
-    { part: "Part 1", accuracy: 88 },
-    { part: "Part 2", accuracy: 74 },
-    { part: "Part 3", accuracy: 65 },
-    { part: "Part 5", accuracy: 80 },
-    { part: "Part 6", accuracy: 70 },
-    { part: "Part 7", accuracy: 58 },
-  ],
-};
+export interface Analysis {
+  strength: { name: string; score: number; note: string };
+  weakness: { name: string; score: number; note: string };
+  recommendation: string;
+}
 
-export function getStats(): Stats {
-  return STATS;
+export function getAnalysis(): Analysis {
+  const scores = getMyScores();
+  const sorted = [...scores].sort((a, b) => b.score - a.score);
+  const top = sorted[0];
+  const bottom = sorted[sorted.length - 1];
+  const need = 60 - bottom.score;
+  const est = Math.max(4, Math.ceil(need / 5));
+
+  return {
+    strength: {
+      name: getCategory(top.code).name,
+      score: top.score,
+      note: `${getCategory(top.code).description} 영역을 정확히 이해하고 있습니다.`,
+    },
+    weakness: {
+      name: getCategory(bottom.code).name,
+      score: bottom.score,
+      note: `${getCategory(bottom.code).description}에서 반복적으로 오답이 발생합니다.`,
+    },
+    recommendation: `${getCategory(bottom.code).name} Lv.${levelForScore(
+      bottom.score,
+    )} 집중 풀이 (예상 ${est}문항으로 60점 도달 가능)`,
+  };
+}
+
+/** 레이더 차트용 데이터 변환 */
+export function toRadarData(scores: CategoryScore[]) {
+  return scores.map((s) => ({ label: getCategory(s.code).name.slice(0, 2), value: s.score }));
 }

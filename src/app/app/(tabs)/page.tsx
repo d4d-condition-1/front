@@ -1,80 +1,80 @@
 import Link from "next/link";
 
-import { Badge, Card, Icon, ProgressRing } from "@/components/ui";
-import { getMaterials, MaterialCard } from "@/features/materials";
-import { getStats } from "@/features/report";
+import { Badge, Button, Card, Icon, RadarChart } from "@/components/ui";
+import {
+  getCategory,
+  getMyScores,
+  gradeOf,
+  overallScore,
+  weakestCategory,
+} from "@/features/categories";
+import { toRadarData } from "@/features/report";
 
 export default function AppHome() {
-  const stats = getStats();
-  const materials = getMaterials();
-  const continueMaterial = materials.find((m) => m.progress > 0 && m.progress < 100);
-  const recommended = materials.filter((m) => m.tag).slice(0, 3);
+  const scores = getMyScores();
+  const overall = overallScore(scores);
+  const grade = gradeOf(overall);
+  const weak = weakestCategory(scores);
+  const weakCat = getCategory(weak.code);
 
   return (
     <div className="flex flex-col gap-5 px-5 pb-6 pt-6">
-      {/* 인사 + 연속 학습 */}
       <header className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-slate-400">안녕하세요 👋</p>
-          <h1 className="text-xl font-bold text-slate-900">학습자님</h1>
+          <p className="text-sm text-slate-400">전투 숙달 가속기</p>
+          <h1 className="text-xl font-bold text-slate-900">김일병 님</h1>
         </div>
-        <Badge tone="amber" className="gap-1 px-3 py-1.5">
-          <Icon name="flame" size={16} /> {stats.streak}일 연속
+        <Badge tone="slate" className="px-3 py-1.5">
+          1소대 3분대
         </Badge>
       </header>
 
-      {/* 예상 점수 카드 */}
-      <div className="flex items-center gap-5 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 p-5 text-white shadow-sm">
-        <ProgressRing
-          value={Math.round((stats.predictedScore / 990) * 100)}
-          size={104}
-          stroke={10}
-        />
+      {/* 종합 점수 + 등급 */}
+      <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 p-5 text-white shadow-sm">
+        <div className="grid h-20 w-20 place-items-center rounded-2xl bg-white/15 text-4xl font-black backdrop-blur">
+          {grade}
+        </div>
         <div className="flex-1">
-          <p className="text-xs text-indigo-100">예상 점수</p>
+          <p className="text-xs text-indigo-100">종합 숙련도</p>
           <p className="text-3xl font-black">
-            {stats.predictedScore}
-            <span className="text-base font-medium text-indigo-200"> / 990</span>
+            {overall}
+            <span className="text-base font-medium text-indigo-200"> / 100</span>
           </p>
-          <div className="mt-2 flex gap-4 text-xs text-indigo-100">
-            <span>LC {stats.lcScore}</span>
-            <span>RC {stats.rcScore}</span>
-          </div>
+          <p className="mt-1 text-xs text-indigo-100">등급 {grade}</p>
         </div>
       </div>
 
-      {/* 이어서 학습 */}
-      {continueMaterial && (
-        <Link href={`/app/solve/${continueMaterial.id}`}>
-          <Card className="flex items-center gap-4 transition-shadow hover:shadow-md">
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-indigo-600 text-white">
-              <Icon name="play" size={22} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-indigo-600">이어서 학습하기</p>
-              <p className="truncate font-semibold text-slate-900">
-                {continueMaterial.title}
-              </p>
-            </div>
-            <span className="text-sm font-bold text-slate-400">
-              {continueMaterial.progress}%
-            </span>
-          </Card>
-        </Link>
-      )}
+      {/* 레이더 차트 */}
+      <Card className="flex flex-col items-center">
+        <p className="mb-1 w-full text-sm font-bold text-slate-900">역량 프로필</p>
+        <RadarChart data={toRadarData(scores)} size={280} />
+      </Card>
 
-      {/* 추천 학습 */}
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-bold text-slate-900">추천 학습</h2>
-          <Link href="/app/learn" className="text-xs font-medium text-indigo-600">
-            전체 보기
-          </Link>
+      {/* 약점 집중 훈련 */}
+      <Card className="flex items-center gap-4">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-red-50 text-red-500">
+          <Icon name="target" size={24} />
         </div>
-        {recommended.map((m) => (
-          <MaterialCard key={m.id} material={m} />
-        ))}
-      </section>
+        <div className="flex-1">
+          <p className="text-xs font-medium text-red-500">약점 영역</p>
+          <p className="font-semibold text-slate-900">
+            {weakCat.name} <span className="text-slate-400">({weak.score}점)</span>
+          </p>
+        </div>
+      </Card>
+
+      <Link href="/app/training">
+        <Button size="lg">
+          <Icon name="target" size={20} /> 약점 집중 훈련 시작
+        </Button>
+      </Link>
+
+      <Link
+        href="/app/diagnostic"
+        className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm font-semibold text-indigo-600 ring-1 ring-indigo-100"
+      >
+        <Icon name="chart" size={18} /> 진단 테스트 다시 하기
+      </Link>
     </div>
   );
 }

@@ -20,6 +20,7 @@ export function AiManager() {
   const [label, setLabel] = useState("");
   const [model, setModel] = useState(PROVIDER_META.anthropic.models[0]);
   const [apiKey, setApiKey] = useState("");
+  const [tested, setTested] = useState(false);
 
   function onProviderChange(p: Provider) {
     setProvider(p);
@@ -134,7 +135,23 @@ export function AiManager() {
             />
           </Field>
 
-          <Button type="submit" className="mt-1 w-full">
+          <div className="mt-1 flex items-center gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              className="flex-1"
+              onClick={() => setTested(true)}
+            >
+              연결 테스트
+            </Button>
+            {tested && (
+              <span className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
+                <Icon name="check" size={16} /> 연결 성공
+              </span>
+            )}
+          </div>
+
+          <Button type="submit" className="w-full">
             <Icon name="plus" size={18} /> 등록하기
           </Button>
         </form>

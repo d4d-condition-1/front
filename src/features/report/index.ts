@@ -1,4 +1,2 @@
-export { getStats } from "./api/reportApi";
-export type { Stats, PartAccuracy } from "./api/reportApi";
-export { ScoreTrend } from "./components/ScoreTrend";
-export { PartAccuracyList } from "./components/PartAccuracyList";
+export { getTrainingStats, getAnalysis, toRadarData } from "./api/reportApi";
+export type { TrainingStats, Analysis } from "./api/reportApi";
