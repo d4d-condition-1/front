@@ -3,27 +3,38 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "ghost";
+type Size = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
+  size?: Size;
 }
 
 const variantStyles: Record<Variant, string> = {
-  primary: "bg-black text-white hover:bg-black/80 dark:bg-white dark:text-black",
-  secondary: "border border-black/15 hover:bg-black/5 dark:border-white/20",
-  ghost: "hover:bg-black/5 dark:hover:bg-white/10",
+  primary: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-600/20",
+  secondary: "bg-indigo-50 text-indigo-700 hover:bg-indigo-100",
+  ghost: "text-slate-600 hover:bg-slate-100",
 };
 
-/**
- * 전역 재사용 UI 프리미티브 예시.
- * 여러 기능에서 공통으로 쓰는 순수 프레젠테이션 컴포넌트는 여기(components/ui)에 둔다.
- */
-export function Button({ variant = "primary", className, ...props }: ButtonProps) {
+const sizeStyles: Record<Size, string> = {
+  sm: "h-9 px-3 text-sm rounded-lg",
+  md: "h-11 px-5 text-sm rounded-xl",
+  lg: "h-13 px-6 text-base rounded-2xl w-full py-3.5",
+};
+
+/** 전역 재사용 버튼. 인디고 브랜드 컬러(산타토익 톤). */
+export function Button({
+  variant = "primary",
+  size = "md",
+  className,
+  ...props
+}: ButtonProps) {
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center gap-2 font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50",
         variantStyles[variant],
+        sizeStyles[size],
         className,
       )}
       {...props}
