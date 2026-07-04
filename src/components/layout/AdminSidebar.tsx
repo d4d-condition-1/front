@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 const items: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin", label: "부대 현황", icon: "chart" },
   { href: "/admin/users", label: "장병 관리", icon: "users" },
+  { href: "/admin/accounts", label: "계정/권한", icon: "settings" },
   { href: "/admin/ai", label: "AI 연동", icon: "cpu" },
   { href: "/admin/materials", label: "학습 자료", icon: "book" },
 ];

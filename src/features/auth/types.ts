@@ -21,4 +21,7 @@ export interface RegisterInput {
   name: string;
   rank?: string;
   unit?: string;
+  /** 가입 역할. 'admin' 은 adminCode(관리자 가입 코드) 필수 */
+  role?: Role;
+  adminCode?: string;
 }

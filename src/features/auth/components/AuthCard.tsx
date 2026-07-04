@@ -13,6 +13,7 @@ const inputCls =
   "w-full rounded-xl border border-white/20 bg-white/10 px-3.5 py-3 text-sm text-white placeholder:text-indigo-200 outline-none backdrop-blur focus:border-white/50 focus:ring-2 focus:ring-white/20";
 
 type Mode = "login" | "register";
+type SignupRole = "trainee" | "admin";
 
 /** 랜딩 로그인/회원가입 카드 (성공 시 역할별로 /admin 또는 /app 이동) */
 export function AuthCard() {
@@ -25,6 +26,8 @@ export function AuthCard() {
   const [name, setName] = useState("");
   const [rank, setRank] = useState("");
   const [unit, setUnit] = useState("");
+  const [signupRole, setSignupRole] = useState<SignupRole>("trainee");
+  const [adminCode, setAdminCode] = useState("");
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -37,6 +40,9 @@ export function AuthCard() {
         name: name.trim(),
         rank: rank.trim(),
         unit: unit.trim(),
+        role: signupRole,
+        // 관리자 가입일 때만 코드 전송 (서버가 ADMIN_INVITE_CODE 와 대조)
+        ...(signupRole === "admin" ? { adminCode: adminCode.trim() } : {}),
       });
     }
   }
@@ -139,6 +145,48 @@ export function AuthCard() {
                 className={inputCls}
               />
             </div>
+
+            {/* 가입 유형 선택 */}
+            <div className="grid grid-cols-2 gap-1 rounded-xl bg-black/15 p-1">
+              {(
+                [
+                  ["trainee", "일반 장병"],
+                  ["admin", "관리자"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setSignupRole(value)}
+                  className={cn(
+                    "rounded-lg py-2 text-xs font-semibold transition-colors",
+                    signupRole === value
+                      ? "bg-white text-indigo-700"
+                      : "text-indigo-100 hover:text-white",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {signupRole === "admin" && (
+              <>
+                <input
+                  value={adminCode}
+                  onChange={(e) => setAdminCode(e.target.value)}
+                  placeholder="관리자 가입 코드"
+                  type="password"
+                  autoComplete="off"
+                  required
+                  className={inputCls}
+                />
+                <p className="text-[11px] leading-relaxed text-indigo-200">
+                  부대에서 발급한 관리자 가입 코드가 필요합니다. 코드가 없다면
+                  일반 장병으로 가입 후 기존 관리자에게 권한 부여를 요청하세요.
+                </p>
+              </>
+            )}
           </>
         )}
 

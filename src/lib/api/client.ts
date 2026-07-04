@@ -8,7 +8,22 @@
  * ⚠️ 보호 파일: 이 파일은 앱 전체의 통신 규약이다.
  *    수정은 관리자 승인 하에서만 한다 (AGENTS.md '보호 영역' 참고).
  */
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+/**
+ * API 주소 결정:
+ * 1) NEXT_PUBLIC_API_BASE_URL 이 빌드에 주어졌으면 그 값을 쓰고,
+ * 2) 없으면 브라우저 접속 주소의 호스트 + :9666 으로 자동 유도한다.
+ *    (데모용 — 어떤 IP/도메인으로 접속해도 같은 호스트의 API 를 바라본다)
+ */
+function resolveBaseUrl(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (fromEnv) return fromEnv;
+  if (typeof window !== "undefined") {
+    return `${window.location.protocol}//${window.location.hostname}:9666`;
+  }
+  return "";
+}
+
+const BASE_URL = resolveBaseUrl();
 const TOKEN_KEY = "d4d_token";
 
 export class ApiError extends Error {
