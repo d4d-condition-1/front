@@ -88,7 +88,7 @@ export default function AppHome() {
         </>
       )}
 
-      <Link href="/app/training">
+      <Link href="/app/training/session?mode=adaptive">
         <Button size="lg">
           <Icon name="target" size={20} /> 약점 집중 훈련 시작
         </Button>

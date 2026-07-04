@@ -37,16 +37,16 @@ export class ApiError extends Error {
 
 /** 세션 토큰 저장/삭제 (features/auth 에서만 호출) */
 export function setAuthToken(token: string) {
-  if (typeof window !== "undefined") localStorage.setItem(TOKEN_KEY, token);
+  if (typeof window !== "undefined") sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearAuthToken() {
-  if (typeof window !== "undefined") localStorage.removeItem(TOKEN_KEY);
+  if (typeof window !== "undefined") sessionStorage.removeItem(TOKEN_KEY);
 }
 
 function authHeader(): Record<string, string> {
   if (typeof window === "undefined") return {};
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = sessionStorage.getItem(TOKEN_KEY);
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

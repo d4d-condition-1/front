@@ -72,12 +72,17 @@ export function useMaterialHub(id: string) {
     setQuestions((prev) => prev.filter((q) => q.id !== qid));
   }, []);
 
+  const updateMaterial = useCallback((updated: MaterialDetail) => {
+    setMaterial(updated);
+  }, []);
+
   return {
     material,
     questions,
     loading,
     error,
     saveBody,
+    updateMaterial,
     saveQuestion,
     toggleQuestion,
     removeQuestion,

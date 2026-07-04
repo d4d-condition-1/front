@@ -10,13 +10,14 @@ import {
   type SessionSummary,
   type TrainingMode,
 } from "../api/trainingApi";
+import type { CategoryCode } from "@/features/categories";
 
 /**
  * 서버 기반 훈련 세션 상태.
  * - 시작 시 서버가 문항을 출제(정답 제외)한다.
  * - 제출하면 서버가 채점해 정답·해설·점수 변동을 돌려준다.
  */
-export function useSession(mode: TrainingMode) {
+export function useSession(mode: TrainingMode, category?: CategoryCode) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -35,7 +36,7 @@ export function useSession(mode: TrainingMode) {
 
   useEffect(() => {
     let active = true;
-    startSession(mode)
+    startSession(mode, category)
       .then((res) => {
         if (!active) return;
         setSessionId(res.sessionId);
@@ -47,7 +48,7 @@ export function useSession(mode: TrainingMode) {
     return () => {
       active = false;
     };
-  }, [mode]);
+  }, [mode, category]);
 
   const current = questions[index];
   const total = questions.length;

@@ -51,11 +51,23 @@ export interface AnswerResult {
   summary?: SessionSummary;
 }
 
+export interface AvailableCategory {
+  code: CategoryCode;
+  name: string;
+  color: string;
+  questionCount: number;
+  userScore: number;
+}
+
+export function fetchAvailableTrainings(): Promise<{ categories: AvailableCategory[] }> {
+  return apiFetch("/api/training/available");
+}
+
 /** 세션 시작 → 문항 목록 (출제 가능한 문항이 없으면 503) */
-export function startSession(mode: TrainingMode): Promise<StartSessionResult> {
+export function startSession(mode: TrainingMode, category?: CategoryCode): Promise<StartSessionResult> {
   return apiFetch<StartSessionResult>("/api/training/sessions", {
     method: "POST",
-    body: JSON.stringify({ mode }),
+    body: JSON.stringify({ mode, ...(category ? { category } : {}) }),
   });
 }
 

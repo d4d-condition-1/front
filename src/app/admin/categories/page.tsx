@@ -1,0 +1,5 @@
+import { CategoriesManager } from "@/features/admin-categories";
+
+export default function AdminCategoriesPage() {
+  return <CategoriesManager />;
+}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { Badge, Button, Icon, ProgressBar, Spinner } from "@/components/ui";
-import { getCategory } from "@/features/categories";
+import { getCategory, type CategoryCode } from "@/features/categories";
 import type { TrainingMode } from "../api/trainingApi";
 import { useSession } from "../hooks/useSession";
 import { Choice } from "./Choice";
@@ -12,14 +12,15 @@ import { SessionResult } from "./SessionResult";
 interface SessionRunnerProps {
   title: string;
   mode: TrainingMode;
+  category?: CategoryCode;
   exitHref: string;
   ctaHref: string;
   ctaLabel: string;
 }
 
 /** 진단/훈련 세션 화면 전체. 문항 출제·채점은 서버가 담당한다. */
-export function SessionRunner({ title, mode, exitHref, ctaHref, ctaLabel }: SessionRunnerProps) {
-  const s = useSession(mode);
+export function SessionRunner({ title, mode, category, exitHref, ctaHref, ctaLabel }: SessionRunnerProps) {
+  const s = useSession(mode, category);
 
   // 로딩
   if (s.loading) {

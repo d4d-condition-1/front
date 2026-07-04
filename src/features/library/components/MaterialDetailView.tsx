@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Badge, Button, Card, Icon, Spinner } from "@/components/ui";
 import { getCategory } from "@/features/categories";
 import { useMaterialHub } from "../hooks/useMaterialHub";
-import { generateQuestions, type DraftQuestion } from "../api/libraryApi";
+import { generateQuestions, uploadPdf, deletePdf, type DraftQuestion } from "../api/libraryApi";
 import type { AdminQuestion } from "../api/questionApi";
 import { EMPTY_QUESTION, QuestionForm, type QuestionFormValue } from "./QuestionForm";
 
@@ -44,6 +44,10 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
   const [bodyDraft, setBodyDraft] = useState<string | null>(null);
   const [savingBody, setSavingBody] = useState(false);
 
+  // PDF 업로드
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+
   // AI 생성
   const [count, setCount] = useState("5");
   const [difficulty, setDifficulty] = useState("");
@@ -73,6 +77,36 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
   const cat = getCategory(material.category);
   const bodyValue = bodyDraft ?? material.body;
   const bodyDirty = bodyDraft != null && bodyDraft !== material.body;
+
+  async function onUploadPdf(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 30 * 1024 * 1024) {
+      setPdfError("PDF 파일은 30MB 이하여야 합니다.");
+      return;
+    }
+    setPdfError(null);
+    setUploadingPdf(true);
+    try {
+      const updated = await uploadPdf(material!.id, file);
+      hub.updateMaterial(updated);
+    } catch (err) {
+      setPdfError(err instanceof Error ? err.message : "PDF 업로드에 실패했습니다.");
+    } finally {
+      setUploadingPdf(false);
+      e.target.value = "";
+    }
+  }
+
+  async function onDeletePdf() {
+    if (!confirm("첨부된 PDF를 삭제할까요?")) return;
+    try {
+      const updated = await deletePdf(material!.id);
+      hub.updateMaterial(updated);
+    } catch {
+      /* ignore */
+    }
+  }
 
   async function onSaveBody() {
     if (bodyDraft == null) return;
@@ -163,6 +197,50 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
             </Button>
           </Card>
 
+          {/* PDF 업로드 */}
+          <Card className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <p className="font-bold text-ink">PDF 첨부</p>
+              <Badge tone={material.hasPdf ? "green" : "slate"}>
+                {material.hasPdf ? "첨부됨" : "없음"}
+              </Badge>
+            </div>
+            <p className="text-xs text-ink-faint">
+              Anthropic·Google 연동은 PDF를 직접 읽어 문제를 생성합니다. 본문이 없어도 PDF만으로
+              생성 가능합니다.
+            </p>
+            {material.hasPdf && (
+              <div className="flex items-center gap-2 rounded-lg bg-surface-2 px-3 py-2 text-xs">
+                <Icon name="file" size={14} className="shrink-0 text-ink-muted" />
+                <span className="min-w-0 truncate text-ink">{material.pdfFilename ?? "PDF 파일"}</span>
+                <button
+                  onClick={onDeletePdf}
+                  className="ml-auto shrink-0 text-ink-faint hover:text-red-400"
+                >
+                  삭제
+                </button>
+              </div>
+            )}
+            {pdfError && (
+              <p className="rounded-lg bg-red-500/10 px-3 py-2 text-xs font-medium text-red-300">
+                {pdfError}
+              </p>
+            )}
+            <label className={`cursor-pointer self-start ${uploadingPdf ? "pointer-events-none opacity-50" : ""}`}>
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-surface-2 px-3 py-2 text-sm font-medium text-ink hover:bg-surface">
+                <Icon name="upload" size={15} />
+                {uploadingPdf ? "업로드 중..." : material.hasPdf ? "PDF 교체" : "PDF 업로드"}
+              </span>
+              <input
+                type="file"
+                accept=".pdf,application/pdf"
+                className="sr-only"
+                onChange={onUploadPdf}
+                disabled={uploadingPdf}
+              />
+            </label>
+          </Card>
+
           {/* AI 생성 패널 */}
           <Card className="flex flex-col gap-3">
             <p className="font-bold text-ink">AI 문제 생성</p>
@@ -209,11 +287,11 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
                 {genError}
               </p>
             )}
-            <Button variant="signal" onClick={onGenerate} loading={generating} disabled={!material.hasBody}>
+            <Button variant="signal" onClick={onGenerate} loading={generating} disabled={!material.hasBody && !material.hasPdf}>
               <Icon name="cpu" size={18} /> AI로 문제 생성
             </Button>
-            {!material.hasBody && (
-              <p className="text-xs text-amber-300">본문을 먼저 저장해야 생성할 수 있습니다.</p>
+            {!material.hasBody && !material.hasPdf && (
+              <p className="text-xs text-amber-300">본문 또는 PDF를 먼저 등록해야 생성할 수 있습니다.</p>
             )}
           </Card>
 

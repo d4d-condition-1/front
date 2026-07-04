@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 const tabs: { href: string; label: string; icon: IconName }[] = [
   { href: "/app", label: "홈", icon: "home" },
   { href: "/app/training", label: "훈련", icon: "target" },
-  { href: "/app/fitness", label: "특급전사", icon: "dumbbell" },
   { href: "/app/programs", label: "커리큘럼", icon: "list" },
   { href: "/app/report", label: "리포트", icon: "chart" },
   { href: "/app/profile", label: "프로필", icon: "user" },

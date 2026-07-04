@@ -15,6 +15,8 @@ export interface LibraryItem {
 /** 단건(본문 포함) — 자료 상세 화면용 */
 export interface MaterialDetail extends LibraryItem {
   body: string;
+  hasPdf: boolean;
+  pdfFilename: string | null;
 }
 
 export interface LibraryItemInput {
@@ -82,4 +84,23 @@ export function updateLibraryItem(
 
 export function deleteLibraryItem(id: string): Promise<void> {
   return apiFetch<void>(`/api/admin/materials/${id}`, { method: "DELETE" });
+}
+
+/** PDF 파일을 base64로 변환해 업로드 */
+export async function uploadPdf(materialId: string, file: File): Promise<MaterialDetail> {
+  const data = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("파일 읽기에 실패했습니다."));
+    reader.readAsDataURL(file);
+  });
+  return apiFetch<MaterialDetail>(`/api/admin/materials/${materialId}/upload-pdf`, {
+    method: "POST",
+    body: JSON.stringify({ filename: file.name, data }),
+  });
+}
+
+/** PDF 삭제 */
+export function deletePdf(materialId: string): Promise<MaterialDetail> {
+  return apiFetch<MaterialDetail>(`/api/admin/materials/${materialId}/pdf`, { method: "DELETE" });
 }
