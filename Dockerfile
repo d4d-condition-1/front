@@ -2,26 +2,32 @@
 
 # Multi-stage build for a Next.js (App Router) app using `output: "standalone"`.
 # Final image only contains the standalone server + static assets.
-
-FROM node:22-alpine AS base
-# libc6-compat helps some native deps run on Alpine.
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
+#
+# 각 스테이지는 공용 `base` 중간 이미지를 재사용하지 않고 각자 node:22-alpine
+# (태그된 영구 이미지)에서 시작한다. 레거시 빌더 + 동시 배포의
+# `docker image prune -f` 가 dangling 중간 이미지를 지워 "No such image" 로
+# 실패하던 문제를 피하기 위함. (근본 해결은 배포 시 DOCKER_BUILDKIT=1)
 
 # --- Install dependencies (cached on lockfile changes) ---
-FROM base AS deps
+FROM node:22-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
 # --- Build the app ---
-FROM base AS builder
+FROM node:22-alpine AS builder
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
 # --- Runtime image ---
-FROM base AS runner
+FROM node:22-alpine AS runner
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=9555
