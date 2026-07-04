@@ -78,9 +78,9 @@ export function AiManager() {
               {c.status === "active" ? "중지" : "재개"}
             </Button>
             <Button
-              variant="ghost"
+              variant="danger"
               size="sm"
-              className="text-red-500 hover:bg-red-50"
+              
               onClick={() => {
                 if (confirm(`'${c.label}' 연동을 삭제할까요?`)) remove(c.id);
               }}

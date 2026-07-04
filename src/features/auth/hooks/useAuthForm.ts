@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { login, register } from "../api/authApi";
@@ -16,6 +16,12 @@ export function useAuthForm() {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 로그인 성공 후 이동이 즉시 되도록 목적지 라우트를 미리 로드해 둔다
+  useEffect(() => {
+    router.prefetch("/app");
+    router.prefetch("/admin");
+  }, [router]);
 
   async function run(action: () => Promise<{ user: User }>) {
     setSubmitting(true);

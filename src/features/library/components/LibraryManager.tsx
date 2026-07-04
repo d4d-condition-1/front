@@ -84,9 +84,9 @@ export function LibraryManager() {
                   {it.isActive ? "비활성" : "활성"}
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant="danger"
                   size="sm"
-                  className="text-red-500 hover:bg-red-50"
+                  
                   onClick={() => {
                     if (confirm(`'${it.title}' 자료를 삭제할까요?`)) remove(it.id);
                   }}

@@ -224,8 +224,8 @@ export function AuthCard() {
 
         <Button
           type="submit"
-          disabled={form.submitting}
-          className="mt-1 w-full bg-white text-primary-700 hover:bg-primary-50"
+          loading={form.submitting}
+          className="mt-1 w-full"
         >
           {form.submitting
             ? "처리 중..."

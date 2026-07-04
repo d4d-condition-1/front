@@ -112,9 +112,9 @@ export function UnitsView() {
                         코드 재발급
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="danger"
                         size="sm"
-                        className="text-red-500 hover:bg-red-50"
+                        
                         onClick={() => {
                           if (confirm(`'${u.name}' 부대를 삭제할까요?`))
                             remove(u.id).catch((err) =>

@@ -105,10 +105,10 @@ export function AccountsView() {
                       ) : a.role === "admin" ? (
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant="danger"
                           disabled={pendingId !== null}
+                          loading={pendingId === a.id}
                           onClick={() => onChangeRole(a, "trainee")}
-                          className="text-red-500 hover:bg-red-50"
                         >
                           {pendingId === a.id ? "변경 중..." : "권한 해제"}
                         </Button>
@@ -117,6 +117,7 @@ export function AccountsView() {
                           size="sm"
                           variant="secondary"
                           disabled={pendingId !== null}
+                          loading={pendingId === a.id}
                           onClick={() => onChangeRole(a, "admin")}
                         >
                           {pendingId === a.id ? "변경 중..." : "관리자 승격"}
