@@ -211,7 +211,6 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
             </p>
             {material.hasPdf && (
               <div className="flex items-center gap-2 rounded-lg bg-surface-2 px-3 py-2 text-xs">
-                <Icon name="file" size={14} className="shrink-0 text-ink-muted" />
                 <span className="min-w-0 truncate text-ink">{material.pdfFilename ?? "PDF 파일"}</span>
                 <button
                   onClick={onDeletePdf}
@@ -228,7 +227,6 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
             )}
             <label className={`cursor-pointer self-start ${uploadingPdf ? "pointer-events-none opacity-50" : ""}`}>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-surface-2 px-3 py-2 text-sm font-medium text-ink hover:bg-surface">
-                <Icon name="upload" size={15} />
                 {uploadingPdf ? "업로드 중..." : material.hasPdf ? "PDF 교체" : "PDF 업로드"}
               </span>
               <input
