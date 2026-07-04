@@ -16,7 +16,9 @@
       "Bash(bash -n deploy/webhook-up.sh)",
       "Bash(git remote *)",
       "Bash(git rev-list *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash(git commit -m '포트 되돌리기\\(웹훅 9444/프론트 9555\\) *)",
+      "Bash(git push *)"
     ]
   }
 }
