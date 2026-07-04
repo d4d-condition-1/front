@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(npx --version)",
+      "Bash(docker --version)",
+      "Bash(git config *)",
+      "Bash(rm -f index.html)",
+      "Bash(npx --yes create-next-app@latest . --ts --app --eslint --tailwind --src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(npm run *)",
+      "Bash(chmod +x deploy/deploy.sh deploy/webhook-server.js)",
+      "Bash(chmod +x deploy/deploy.sh)",
+      "Bash(chmod +x deploy/webhook-server.js deploy/deploy.sh)",
+      "Bash(node --check deploy/webhook-server.js)"
+    ]
+  }
+}

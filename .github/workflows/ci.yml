@@ -1,0 +1,24 @@
+name: CI
+
+# 배포는 서버의 웹훅 서버(deploy/webhook-server.js)가 담당한다.
+# 여기서는 코드 품질 검증(lint + build)만 수행한다. 필요 없으면 이 파일을 지워도 된다.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
