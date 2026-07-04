@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Badge, Button, Card, Icon, Spinner } from "@/components/ui";
 import { getCategory } from "@/features/categories";
 import { useMaterialHub } from "../hooks/useMaterialHub";
-import { generateQuestions, uploadPdf, deletePdf, type DraftQuestion } from "../api/libraryApi";
+import { generateQuestions, generateDraftImage, uploadPdf, deletePdf, type DraftQuestion } from "../api/libraryApi";
 import type { AdminQuestion } from "../api/questionApi";
 import { EMPTY_QUESTION, QuestionForm, type QuestionFormValue } from "./QuestionForm";
 
@@ -20,7 +20,7 @@ interface Editing {
 }
 
 function draftToValue(d: DraftQuestion): QuestionFormValue {
-  return { ...d, points: 5 };
+  return { ...d, points: 5, imageData: d.imageData ?? null, imagePrompt: d.imagePrompt ?? null };
 }
 function questionToValue(q: AdminQuestion): QuestionFormValue {
   return {
@@ -52,9 +52,17 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
   const [count, setCount] = useState("5");
   const [difficulty, setDifficulty] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [includeImages, setIncludeImages] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<DraftQuestion[]>([]);
+  const [draftImageLoading, setDraftImageLoading] = useState<number | null>(null);
+
+  // 미디어 생성/편집 상태
+  const [generatingImageId, setGeneratingImageId] = useState<string | null>(null);
+  const [editingImageId, setEditingImageId] = useState<string | null>(null);
+  const [imageInstruction, setImageInstruction] = useState("");
+  const [generatingVideoId, setGeneratingVideoId] = useState<string | null>(null);
 
   // 편집 폼
   const [editing, setEditing] = useState<Editing | null>(null);
@@ -127,6 +135,7 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
         count: Math.min(10, Math.max(1, Number(count) || 5)),
         difficulty: difficulty ? Number(difficulty) : undefined,
         instructions: instructions.trim() || undefined,
+        includeImages: includeImages || undefined,
       });
       setDrafts(res.drafts);
       if (res.drafts.length === 0) setGenError("생성된 초안이 없습니다. 지시를 바꿔 다시 시도하세요.");
@@ -243,7 +252,7 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
           <Card className="flex flex-col gap-3">
             <p className="font-bold text-ink">AI 문제 생성</p>
             <p className="text-xs text-ink-faint">
-              등록된 Anthropic 연동으로 초안을 뽑습니다. 초안은 저장 전이며, 검수 후 저장합니다.
+              등록된 AI 연동으로 초안을 생성합니다. 초안은 저장 전이며, 검수 후 저장합니다.
             </p>
             <div className="grid grid-cols-2 gap-3">
               <label className="flex flex-col gap-1.5">
@@ -280,6 +289,15 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
               rows={2}
               className={inputCls}
             />
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={includeImages}
+                onChange={(e) => setIncludeImages(e.target.checked)}
+                className="h-4 w-4 rounded border-line accent-primary-500"
+              />
+              <span className="text-xs font-medium text-ink-muted">AI 이미지도 함께 생성</span>
+            </label>
             {genError && (
               <p className="rounded-lg bg-red-500/10 px-3 py-2 text-xs font-medium text-red-300">
                 {genError}
@@ -298,27 +316,75 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
             <div className="flex flex-col gap-2">
               <p className="text-sm font-bold text-ink">AI 초안 {drafts.length}개</p>
               {drafts.map((d, i) => (
-                <Card key={i} className="flex items-start gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="mb-1 flex items-center gap-1.5">
-                      <Badge tone="primary">{d.type === "situational" ? "상황형" : "객관식"}</Badge>
-                      <Badge tone="slate">Lv.{d.difficulty}</Badge>
+                <Card key={i} className="flex flex-col gap-2">
+                  <div className="flex items-start gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-1.5">
+                        <Badge tone="primary">{d.type === "situational" ? "상황형" : "객관식"}</Badge>
+                        <Badge tone="slate">Lv.{d.difficulty}</Badge>
+                        {d.imageData && <Badge tone="green">이미지</Badge>}
+                      </div>
+                      <p className="line-clamp-2 text-sm text-ink">{d.question}</p>
                     </div>
-                    <p className="line-clamp-2 text-sm text-ink">{d.question}</p>
+                    <div className="flex shrink-0 flex-col gap-1">
+                      <Button
+                        size="sm"
+                        onClick={() => setEditing({ value: draftToValue(d), fromDraft: i })}
+                      >
+                        검수
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDrafts((prev) => prev.filter((_, idx) => idx !== i))}
+                      >
+                        버리기
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex shrink-0 flex-col gap-1">
-                    <Button
-                      size="sm"
-                      onClick={() => setEditing({ value: draftToValue(d), fromDraft: i })}
-                    >
-                      검수
-                    </Button>
+                  {/* 초안 이미지 영역 */}
+                  <div className="flex items-start gap-2 border-t border-line/30 pt-2">
+                    {d.imageData ? (
+                      <div className="relative shrink-0">
+                        <img
+                          src={d.imageData.startsWith("data:") ? d.imageData : `data:image/png;base64,${d.imageData}`}
+                          alt=""
+                          className="h-20 w-20 rounded-lg border border-line object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setDrafts((prev) => prev.map((dd, idx) =>
+                            idx === i ? { ...dd, imageData: null, imagePrompt: null } : dd
+                          ))}
+                          className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-surface-2 text-ink-faint ring-1 ring-line hover:text-red-400"
+                          title="이미지 제거"
+                        >
+                          <Icon name="x" size={12} />
+                        </button>
+                      </div>
+                    ) : null}
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setDrafts((prev) => prev.filter((_, idx) => idx !== i))}
+                      loading={draftImageLoading === i}
+                      onClick={async () => {
+                        setDraftImageLoading(i);
+                        try {
+                          const img = await generateDraftImage({
+                            type: d.type,
+                            situation: d.situation,
+                            question: d.question,
+                            materialTitle: material.title,
+                          });
+                          setDrafts((prev) => prev.map((dd, idx) =>
+                            idx === i ? { ...dd, imageData: img.imageData, imagePrompt: img.imagePrompt } : dd
+                          ));
+                        } catch { /* ignore */ }
+                        finally { setDraftImageLoading(null); }
+                      }}
                     >
-                      버리기
+                      <Icon name="cpu" size={14} />
+                      {d.imageData ? "이미지 재생성" : "이미지 생성"}
                     </Button>
                   </div>
                 </Card>
@@ -363,38 +429,170 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
                 {questions.map((q) => (
                   <li
                     key={q.id}
-                    className="flex items-start gap-3 border-b border-line/60 px-5 py-3 last:border-0"
+                    className="flex flex-col gap-2 border-b border-line/60 px-5 py-3 last:border-0"
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="mb-1 flex items-center gap-1.5">
-                        <Badge tone="slate">Lv.{q.difficulty}</Badge>
-                        <Badge tone={q.active ? "green" : "slate"}>
-                          {q.active ? "활성" : "비활성"}
-                        </Badge>
+                    <div className="flex items-start gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1 flex items-center gap-1.5">
+                          <Badge tone="slate">Lv.{q.difficulty}</Badge>
+                          <Badge tone={q.active ? "green" : "slate"}>
+                            {q.active ? "활성" : "비활성"}
+                          </Badge>
+                          {q.hasImage && <Badge tone="primary">이미지</Badge>}
+                          {q.hasVideo && <Badge tone="amber">영상</Badge>}
+                        </div>
+                        <p className="line-clamp-2 text-sm text-ink">{q.question}</p>
                       </div>
-                      <p className="line-clamp-2 text-sm text-ink">{q.question}</p>
+                      <div className="flex shrink-0 items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditing({ value: questionToValue(q), editingId: q.id })}
+                        >
+                          수정
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => hub.toggleQuestion(q)}>
+                          {q.active ? "비활성" : "활성"}
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => {
+                            if (confirm("이 문제를 삭제할까요? (답안 이력이 있으면 비활성화됩니다)"))
+                              hub.removeQuestion(q.id);
+                          }}
+                        >
+                          삭제
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex shrink-0 items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setEditing({ value: questionToValue(q), editingId: q.id })}
-                      >
-                        수정
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => hub.toggleQuestion(q)}>
-                        {q.active ? "비활성" : "활성"}
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => {
-                          if (confirm("이 문제를 삭제할까요? (답안 이력이 있으면 비활성화됩니다)"))
-                            hub.removeQuestion(q.id);
-                        }}
-                      >
-                        삭제
-                      </Button>
+                    {/* 미디어 영역 */}
+                    <div className="flex flex-col gap-3 border-t border-line/50 pt-2">
+                      {/* 이미지 */}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-start gap-3">
+                          {q.hasImage && q.imageData && (
+                            <img
+                              src={`data:image/png;base64,${q.imageData}`}
+                              alt="문제 이미지"
+                              className="h-28 w-28 shrink-0 rounded-lg border border-line object-cover"
+                            />
+                          )}
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                loading={generatingImageId === q.id}
+                                onClick={async () => {
+                                  setGeneratingImageId(q.id);
+                                  try { await hub.genImage(q.id); }
+                                  catch { /* ignore */ }
+                                  finally { setGeneratingImageId(null); }
+                                }}
+                              >
+                                <Icon name="cpu" size={14} />
+                                {q.hasImage ? "재생성" : "이미지 생성"}
+                              </Button>
+                              {q.hasImage && (
+                                <>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      setEditingImageId(editingImageId === q.id ? null : q.id);
+                                      setImageInstruction("");
+                                    }}
+                                  >
+                                    <Icon name="settings" size={14} />
+                                    수정
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      if (confirm("이미지를 삭제할까요?")) hub.removeImage(q.id);
+                                    }}
+                                  >
+                                    삭제
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                            {/* 자연어 이미지 편집 */}
+                            {editingImageId === q.id && q.hasImage && (
+                              <div className="flex items-center gap-1.5">
+                                <input
+                                  value={imageInstruction}
+                                  onChange={(e) => setImageInstruction(e.target.value)}
+                                  placeholder="예: 배경을 숲으로 바꿔줘"
+                                  className="flex-1 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink outline-none focus:border-primary-500"
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && imageInstruction.trim()) {
+                                      e.preventDefault();
+                                      (e.target as HTMLInputElement).form?.requestSubmit();
+                                    }
+                                  }}
+                                />
+                                <Button
+                                  size="sm"
+                                  loading={generatingImageId === q.id}
+                                  disabled={!imageInstruction.trim()}
+                                  onClick={async () => {
+                                    setGeneratingImageId(q.id);
+                                    try {
+                                      await hub.editImage(q.id, imageInstruction.trim());
+                                      setImageInstruction("");
+                                      setEditingImageId(null);
+                                    } catch { /* ignore */ }
+                                    finally { setGeneratingImageId(null); }
+                                  }}
+                                >
+                                  적용
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 비디오 */}
+                      <div className="flex items-start gap-3">
+                        {q.hasVideo && q.videoData && (
+                          <video
+                            src={`data:video/mp4;base64,${q.videoData}`}
+                            controls
+                            className="h-28 w-44 shrink-0 rounded-lg border border-line object-cover"
+                          />
+                        )}
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            loading={generatingVideoId === q.id}
+                            onClick={async () => {
+                              setGeneratingVideoId(q.id);
+                              try { await hub.genVideo(q.id); }
+                              catch { /* ignore */ }
+                              finally { setGeneratingVideoId(null); }
+                            }}
+                          >
+                            <Icon name="play" size={14} />
+                            {q.hasVideo ? "영상 재생성" : "영상 생성"}
+                          </Button>
+                          {q.hasVideo && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                if (confirm("영상을 삭제할까요?")) hub.removeVideo(q.id);
+                              }}
+                            >
+                              삭제
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </li>
                 ))}

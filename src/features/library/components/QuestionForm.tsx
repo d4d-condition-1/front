@@ -18,6 +18,8 @@ export interface QuestionFormValue {
   explanation: string;
   reference: string;
   points: number;
+  imageData?: string | null;
+  imagePrompt?: string | null;
 }
 
 export const EMPTY_QUESTION: QuestionFormValue = {
@@ -89,6 +91,8 @@ export function QuestionForm({ materialId, categoryName, initial, editingId, onS
           points: v.points,
           explanation: v.explanation.trim(),
           reference: v.reference.trim(),
+          imageData: v.imageData ?? null,
+          imagePrompt: v.imagePrompt ?? null,
         },
         editingId,
       );
@@ -230,6 +234,26 @@ export function QuestionForm({ materialId, categoryName, initial, editingId, onS
         placeholder="출처 (예: FM 7-8, 3장)"
         className={inputCls}
       />
+
+      {v.imageData && (
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-medium text-ink-muted">AI 생성 이미지</span>
+          <div className="flex items-start gap-3">
+            <img
+              src={v.imageData.startsWith("data:") ? v.imageData : `data:image/png;base64,${v.imageData}`}
+              alt="문제 이미지"
+              className="h-32 w-32 rounded-lg border border-line object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => patch({ imageData: null, imagePrompt: null })}
+              className="text-xs text-red-400 hover:underline"
+            >
+              이미지 제거
+            </button>
+          </div>
+        </div>
+      )}
 
       {error && (
         <p className="rounded-lg bg-red-500/10 px-3 py-2 text-xs font-medium text-red-300">{error}</p>

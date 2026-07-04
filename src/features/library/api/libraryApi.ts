@@ -36,6 +36,8 @@ export interface DraftQuestion {
   answerIndex: number;
   explanation: string;
   reference: string;
+  imageData?: string | null;
+  imagePrompt?: string | null;
 }
 
 export interface GenerateResult {
@@ -55,12 +57,25 @@ export function fetchMaterial(id: string): Promise<MaterialDetail> {
 /** AI 문항 초안 생성 (저장 X — 검수 후 문제 은행에 저장) */
 export function generateQuestions(
   materialId: string,
-  opts: { count?: number; difficulty?: number; instructions?: string },
+  opts: { count?: number; difficulty?: number; instructions?: string; includeImages?: boolean },
 ): Promise<GenerateResult> {
   return apiFetch<GenerateResult>(
     `/api/admin/materials/${materialId}/generate-questions`,
     { method: "POST", body: JSON.stringify(opts) },
   );
+}
+
+/** 초안용 이미지 생성 (저장 전 문제에 이미지만 생성) */
+export function generateDraftImage(draft: {
+  type: string;
+  situation?: string | null;
+  question: string;
+  materialTitle?: string;
+}): Promise<{ imageData: string; imagePrompt: string }> {
+  return apiFetch("/api/admin/generate-draft-image", {
+    method: "POST",
+    body: JSON.stringify(draft),
+  });
 }
 
 export function createLibraryItem(

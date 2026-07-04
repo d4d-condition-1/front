@@ -3,6 +3,7 @@
 import { AdminHeader } from "@/components/layout";
 import { Card, Icon, type IconName } from "@/components/ui";
 import { useDashboard } from "../hooks/useDashboard";
+import { CategoryAnalyticsView } from "./CategoryAnalyticsView";
 
 const gradeColor: Record<string, string> = {
   S: "bg-primary-600",
@@ -99,6 +100,9 @@ export function DashboardView() {
             )}
           </Card>
         </div>
+
+        {/* 카테고리별 부대 평균 분석 */}
+        <CategoryAnalyticsView />
       </div>
     </>
   );

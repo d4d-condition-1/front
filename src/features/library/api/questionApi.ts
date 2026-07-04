@@ -19,6 +19,12 @@ export interface AdminQuestion {
   active: boolean;
   materialId: string | null;
   materialTitle: string | null;
+  hasImage: boolean;
+  imageData: string | null;
+  imagePrompt: string | null;
+  hasVideo: boolean;
+  videoData: string | null;
+  videoPrompt: string | null;
 }
 
 /** 문제 저장 입력 (materialId 지정 시 카테고리는 서버가 자료에서 강제) */
@@ -33,6 +39,8 @@ export interface QuestionInput {
   points: number;
   explanation: string;
   reference: string;
+  imageData?: string | null;
+  imagePrompt?: string | null;
 }
 
 export function fetchMaterialQuestions(materialId: string): Promise<AdminQuestion[]> {
@@ -60,4 +68,40 @@ export function updateQuestion(
 
 export function deleteQuestion(id: string): Promise<void> {
   return apiFetch<void>(`/api/admin/questions/${id}`, { method: "DELETE" });
+}
+
+/** 문제에 AI 이미지 생성 (OpenAI/Google) */
+export function generateQuestionImage(id: string): Promise<AdminQuestion> {
+  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/generate-image`, {
+    method: "POST",
+  });
+}
+
+/** 문제 이미지 삭제 */
+export function deleteQuestionImage(id: string): Promise<AdminQuestion> {
+  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/image`, {
+    method: "DELETE",
+  });
+}
+
+/** 자연어로 이미지 편집 */
+export function editQuestionImage(id: string, instruction: string): Promise<AdminQuestion> {
+  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/edit-image`, {
+    method: "POST",
+    body: JSON.stringify({ instruction }),
+  });
+}
+
+/** 문제에 AI 비디오 생성 */
+export function generateQuestionVideo(id: string): Promise<AdminQuestion> {
+  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/generate-video`, {
+    method: "POST",
+  });
+}
+
+/** 문제 비디오 삭제 */
+export function deleteQuestionVideo(id: string): Promise<AdminQuestion> {
+  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/video`, {
+    method: "DELETE",
+  });
 }

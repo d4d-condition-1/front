@@ -10,7 +10,12 @@ import {
 import {
   createQuestion,
   deleteQuestion,
+  deleteQuestionImage,
+  deleteQuestionVideo,
+  editQuestionImage,
   fetchMaterialQuestions,
+  generateQuestionImage,
+  generateQuestionVideo,
   updateQuestion,
   type AdminQuestion,
   type QuestionInput,
@@ -72,6 +77,34 @@ export function useMaterialHub(id: string) {
     setQuestions((prev) => prev.filter((q) => q.id !== qid));
   }, []);
 
+  const genImage = useCallback(async (qid: string) => {
+    const updated = await generateQuestionImage(qid);
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+    return updated;
+  }, []);
+
+  const removeImage = useCallback(async (qid: string) => {
+    const updated = await deleteQuestionImage(qid);
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+  }, []);
+
+  const editImage = useCallback(async (qid: string, instruction: string) => {
+    const updated = await editQuestionImage(qid, instruction);
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+    return updated;
+  }, []);
+
+  const genVideo = useCallback(async (qid: string) => {
+    const updated = await generateQuestionVideo(qid);
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+    return updated;
+  }, []);
+
+  const removeVideo = useCallback(async (qid: string) => {
+    const updated = await deleteQuestionVideo(qid);
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+  }, []);
+
   const updateMaterial = useCallback((updated: MaterialDetail) => {
     setMaterial(updated);
   }, []);
@@ -86,5 +119,10 @@ export function useMaterialHub(id: string) {
     saveQuestion,
     toggleQuestion,
     removeQuestion,
+    genImage,
+    removeImage,
+    editImage,
+    genVideo,
+    removeVideo,
   };
 }

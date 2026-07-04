@@ -29,9 +29,12 @@ export function AiManager() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!label.trim() || !apiKey.trim()) return;
-    setSubmitting(true);
     setFormError(null);
+    if (!label.trim() || !apiKey.trim()) {
+      setFormError("용도(라벨)와 API Key를 모두 입력하세요.");
+      return;
+    }
+    setSubmitting(true);
     try {
       await create({ provider, label: label.trim(), model, apiKey: apiKey.trim() });
       setLabel("");
