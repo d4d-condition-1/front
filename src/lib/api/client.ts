@@ -17,10 +17,9 @@
 function resolveBaseUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (fromEnv) return fromEnv;
-  if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:9666`;
-  }
-  return "";
+  if (typeof window === "undefined") return "";
+  if (window.location.protocol === "https:") return "";   // 프록시가 /api 를 백엔드로
+  return `http://${window.location.hostname}:9666`;
 }
 
 const BASE_URL = resolveBaseUrl();
