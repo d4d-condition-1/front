@@ -8,14 +8,15 @@ import {
   type MaterialDetail,
 } from "../api/libraryApi";
 import {
+  applyQuestionImage,
   createQuestion,
   deleteQuestion,
   deleteQuestionImage,
   deleteQuestionVideo,
   editQuestionImage,
   fetchMaterialQuestions,
-  generateQuestionImage,
   generateQuestionVideo,
+  previewQuestionImage,
   updateQuestion,
   type AdminQuestion,
   type QuestionInput,
@@ -77,8 +78,12 @@ export function useMaterialHub(id: string) {
     setQuestions((prev) => prev.filter((q) => q.id !== qid));
   }, []);
 
-  const genImage = useCallback(async (qid: string) => {
-    const updated = await generateQuestionImage(qid);
+  const genImagePreview = useCallback(async (qid: string, prompt?: string) => {
+    return await previewQuestionImage(qid, prompt);
+  }, []);
+
+  const confirmImage = useCallback(async (qid: string, imageData: string, imagePrompt: string) => {
+    const updated = await applyQuestionImage(qid, imageData, imagePrompt);
     setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
     return updated;
   }, []);
@@ -119,7 +124,8 @@ export function useMaterialHub(id: string) {
     saveQuestion,
     toggleQuestion,
     removeQuestion,
-    genImage,
+    genImagePreview,
+    confirmImage,
     removeImage,
     editImage,
     genVideo,

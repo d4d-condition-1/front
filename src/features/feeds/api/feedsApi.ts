@@ -1,14 +1,19 @@
 import { apiFetch } from "@/lib/api";
 import type { CategoryCode } from "@/features/categories";
 
-export type ChannelType = "telegram" | "rss" | "web";
+export type ChannelType = "telegram" | "rss" | "web" | "youtube";
 
 export interface FeedChannel {
   id: string;
   type: ChannelType;
   name: string;
   url: string;
+  keywords: string;
+  language: string;
   description: string;
+  fetchSince: string;
+  fetchUntil: string;
+  maxPages: number;
   isActive: boolean;
   lastFetchedAt: string | null;
   articleCount: number;
@@ -21,6 +26,8 @@ export interface FeedArticle {
   channelName: string | null;
   title: string;
   body: string;
+  bodyHtml: string;
+  images: string[];
   sourceUrl: string | null;
   thumbnail: string | null;
   publishedAt: string | null;
@@ -36,7 +43,9 @@ export function fetchChannels(): Promise<FeedChannel[]> {
 export function createChannel(input: {
   type: ChannelType;
   name: string;
-  url: string;
+  url?: string;
+  keywords?: string;
+  language?: string;
   description?: string;
 }): Promise<FeedChannel> {
   return apiFetch<FeedChannel>("/api/admin/feeds/channels", {
@@ -45,13 +54,27 @@ export function createChannel(input: {
   });
 }
 
+export function updateChannel(
+  id: string,
+  input: { name?: string; url?: string; keywords?: string; language?: string; description?: string; fetchSince?: string; fetchUntil?: string; maxPages?: number },
+): Promise<FeedChannel> {
+  return apiFetch<FeedChannel>(`/api/admin/feeds/channels/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
 export function deleteChannel(id: string): Promise<void> {
   return apiFetch<void>(`/api/admin/feeds/channels/${id}`, { method: "DELETE" });
 }
 
-export function fetchChannelArticles(channelId: string): Promise<{ inserted: number }> {
+export function fetchChannelArticles(
+  channelId: string,
+  opts?: { since?: string; until?: string; maxPages?: number },
+): Promise<{ inserted: number }> {
   return apiFetch<{ inserted: number }>(`/api/admin/feeds/channels/${channelId}/fetch`, {
     method: "POST",
+    body: JSON.stringify(opts ?? {}),
   });
 }
 

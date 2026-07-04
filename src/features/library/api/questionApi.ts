@@ -71,9 +71,17 @@ export function deleteQuestion(id: string): Promise<void> {
 }
 
 /** 문제에 AI 이미지 생성 (OpenAI/Google) */
-export function generateQuestionImage(id: string): Promise<AdminQuestion> {
-  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/generate-image`, {
+export function previewQuestionImage(id: string, prompt?: string): Promise<{ imageData: string; imagePrompt: string }> {
+  return apiFetch<{ imageData: string; imagePrompt: string }>(`/api/admin/questions/${id}/preview-image`, {
     method: "POST",
+    body: JSON.stringify(prompt ? { prompt } : {}),
+  });
+}
+
+export function applyQuestionImage(id: string, imageData: string, imagePrompt: string): Promise<AdminQuestion> {
+  return apiFetch<AdminQuestion>(`/api/admin/questions/${id}/apply-image`, {
+    method: "POST",
+    body: JSON.stringify({ imageData, imagePrompt }),
   });
 }
 

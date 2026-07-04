@@ -33,6 +33,8 @@ function questionToValue(q: AdminQuestion): QuestionFormValue {
     explanation: q.explanation,
     reference: q.reference,
     points: q.points,
+    imageData: q.imageData ?? null,
+    imagePrompt: q.imagePrompt ?? null,
   };
 }
 
@@ -60,9 +62,10 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
 
   // 미디어 생성/편집 상태
   const [generatingImageId, setGeneratingImageId] = useState<string | null>(null);
-  const [editingImageId, setEditingImageId] = useState<string | null>(null);
-  const [imageInstruction, setImageInstruction] = useState("");
-  const [generatingVideoId, setGeneratingVideoId] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<{ qid: string; imageData: string; imagePrompt: string } | null>(null);
+  const [applyingImage, setApplyingImage] = useState(false);
+  const [imagePrompts, setImagePrompts] = useState<Record<string, string>>({});
+  const [mediaError, setMediaError] = useState<string | null>(null);
 
   // 편집 폼
   const [editing, setEditing] = useState<Editing | null>(null);
@@ -466,47 +469,135 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
                         </Button>
                       </div>
                     </div>
-                    {/* 미디어 영역 */}
-                    <div className="flex flex-col gap-3 border-t border-line/50 pt-2">
-                      {/* 이미지 */}
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-start gap-3">
-                          {q.hasImage && q.imageData && (
+                    {/* 이미지 영역 */}
+                    <div className="flex flex-col gap-2 border-t border-line/50 pt-2">
+                      {/* 에러 표시 */}
+                      {mediaError && generatingImageId === q.id && (
+                        <p className="rounded-lg bg-red-500/10 px-3 py-1.5 text-xs text-red-300">{mediaError}</p>
+                      )}
+
+                      {/* 로딩 표시 */}
+                      {generatingImageId === q.id && (
+                        <div className="flex items-center gap-2 rounded-lg bg-primary-500/10 px-3 py-1.5 text-xs text-primary-300">
+                          <Spinner size={14} /> AI 이미지 생성 중...
+                        </div>
+                      )}
+
+                      <div className="flex items-start gap-3">
+                        {/* 현재 적용된 이미지 */}
+                        {q.hasImage && q.imageData && imagePreview?.qid !== q.id && (
+                          <img
+                            src={`data:image/png;base64,${q.imageData}`}
+                            alt="문제 이미지"
+                            className="h-28 w-28 shrink-0 rounded-lg border border-line object-cover"
+                          />
+                        )}
+                        {/* 미리보기 이미지 */}
+                        {imagePreview?.qid === q.id && (
+                          <div className="relative shrink-0">
                             <img
-                              src={`data:image/png;base64,${q.imageData}`}
-                              alt="문제 이미지"
-                              className="h-28 w-28 shrink-0 rounded-lg border border-line object-cover"
+                              src={imagePreview.imageData.startsWith("data:") ? imagePreview.imageData : `data:image/png;base64,${imagePreview.imageData}`}
+                              alt="미리보기"
+                              className="h-28 w-28 rounded-lg border-2 border-primary-500 object-cover"
                             />
-                          )}
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                loading={generatingImageId === q.id}
-                                onClick={async () => {
+                            <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded bg-primary-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                              미리보기
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              value={imagePrompts[q.id] ?? ""}
+                              onChange={(e) => { setImagePrompts((p) => ({ ...p, [q.id]: e.target.value })); setMediaError(null); }}
+                              placeholder={q.hasImage ? "수정 지시 (예: 배경을 숲으로)" : "이미지 프롬프트 (비우면 자동 생성)"}
+                              className="w-52 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink outline-none focus:border-primary-500"
+                              disabled={generatingImageId === q.id}
+                              onKeyDown={(e) => {
+                                if (e.key !== "Enter" || generatingImageId === q.id) return;
+                                e.preventDefault();
+                                const prompt = (imagePrompts[q.id] ?? "").trim();
+                                (async () => {
                                   setGeneratingImageId(q.id);
-                                  try { await hub.genImage(q.id); }
-                                  catch { /* ignore */ }
+                                  setMediaError(null);
+                                  try {
+                                    if (q.hasImage && prompt && !imagePreview) {
+                                      await hub.editImage(q.id, prompt);
+                                      setImagePrompts((p) => ({ ...p, [q.id]: "" }));
+                                    } else {
+                                      const preview = await hub.genImagePreview(q.id, prompt || undefined);
+                                      setImagePreview({ qid: q.id, ...preview });
+                                    }
+                                  } catch (err) { setMediaError(err instanceof Error ? err.message : "이미지 생성 실패"); }
                                   finally { setGeneratingImageId(null); }
-                                }}
-                              >
-                                <Icon name="cpu" size={14} />
-                                {q.hasImage ? "재생성" : "이미지 생성"}
-                              </Button>
-                              {q.hasImage && (
-                                <>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      setEditingImageId(editingImageId === q.id ? null : q.id);
-                                      setImageInstruction("");
-                                    }}
-                                  >
-                                    <Icon name="settings" size={14} />
-                                    수정
-                                  </Button>
+                                })();
+                              }}
+                            />
+                            {imagePreview?.qid === q.id ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  loading={applyingImage}
+                                  onClick={async () => {
+                                    setApplyingImage(true);
+                                    setMediaError(null);
+                                    try {
+                                      await hub.confirmImage(q.id, imagePreview.imageData, imagePreview.imagePrompt);
+                                      setImagePreview(null);
+                                      setImagePrompts((p) => ({ ...p, [q.id]: "" }));
+                                    } catch (err) { setMediaError(err instanceof Error ? err.message : "적용 실패"); }
+                                    finally { setApplyingImage(false); }
+                                  }}
+                                >
+                                  적용
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  loading={generatingImageId === q.id}
+                                  onClick={async () => {
+                                    const prompt = (imagePrompts[q.id] ?? "").trim();
+                                    setGeneratingImageId(q.id);
+                                    setMediaError(null);
+                                    try {
+                                      const preview = await hub.genImagePreview(q.id, prompt || undefined);
+                                      setImagePreview({ qid: q.id, ...preview });
+                                    } catch (err) { setMediaError(err instanceof Error ? err.message : "이미지 생성 실패"); }
+                                    finally { setGeneratingImageId(null); }
+                                  }}
+                                >
+                                  <Icon name="cpu" size={14} /> 다시 생성
+                                </Button>
+                                <Button variant="secondary" size="sm" onClick={() => { setImagePreview(null); setMediaError(null); }}>
+                                  취소
+                                </Button>
+                              </>
+                            ) : (
+                              <>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  loading={generatingImageId === q.id}
+                                  onClick={async () => {
+                                    const prompt = (imagePrompts[q.id] ?? "").trim();
+                                    setGeneratingImageId(q.id);
+                                    setMediaError(null);
+                                    try {
+                                      if (q.hasImage && prompt) {
+                                        await hub.editImage(q.id, prompt);
+                                        setImagePrompts((p) => ({ ...p, [q.id]: "" }));
+                                      } else {
+                                        const preview = await hub.genImagePreview(q.id, prompt || undefined);
+                                        setImagePreview({ qid: q.id, ...preview });
+                                      }
+                                    } catch (err) { setMediaError(err instanceof Error ? err.message : "이미지 생성 실패"); }
+                                    finally { setGeneratingImageId(null); }
+                                  }}
+                                >
+                                  <Icon name="cpu" size={14} />
+                                  {q.hasImage && (imagePrompts[q.id] ?? "").trim() ? "수정" : q.hasImage ? "재생성" : "이미지 생성"}
+                                </Button>
+                                {q.hasImage && (
                                   <Button
                                     variant="ghost"
                                     size="sm"
@@ -516,81 +607,10 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
                                   >
                                     삭제
                                   </Button>
-                                </>
-                              )}
-                            </div>
-                            {/* 자연어 이미지 편집 */}
-                            {editingImageId === q.id && q.hasImage && (
-                              <div className="flex items-center gap-1.5">
-                                <input
-                                  value={imageInstruction}
-                                  onChange={(e) => setImageInstruction(e.target.value)}
-                                  placeholder="예: 배경을 숲으로 바꿔줘"
-                                  className="flex-1 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink outline-none focus:border-primary-500"
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter" && imageInstruction.trim()) {
-                                      e.preventDefault();
-                                      (e.target as HTMLInputElement).form?.requestSubmit();
-                                    }
-                                  }}
-                                />
-                                <Button
-                                  size="sm"
-                                  loading={generatingImageId === q.id}
-                                  disabled={!imageInstruction.trim()}
-                                  onClick={async () => {
-                                    setGeneratingImageId(q.id);
-                                    try {
-                                      await hub.editImage(q.id, imageInstruction.trim());
-                                      setImageInstruction("");
-                                      setEditingImageId(null);
-                                    } catch { /* ignore */ }
-                                    finally { setGeneratingImageId(null); }
-                                  }}
-                                >
-                                  적용
-                                </Button>
-                              </div>
+                                )}
+                              </>
                             )}
                           </div>
-                        </div>
-                      </div>
-
-                      {/* 비디오 */}
-                      <div className="flex items-start gap-3">
-                        {q.hasVideo && q.videoData && (
-                          <video
-                            src={`data:video/mp4;base64,${q.videoData}`}
-                            controls
-                            className="h-28 w-44 shrink-0 rounded-lg border border-line object-cover"
-                          />
-                        )}
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            loading={generatingVideoId === q.id}
-                            onClick={async () => {
-                              setGeneratingVideoId(q.id);
-                              try { await hub.genVideo(q.id); }
-                              catch { /* ignore */ }
-                              finally { setGeneratingVideoId(null); }
-                            }}
-                          >
-                            <Icon name="play" size={14} />
-                            {q.hasVideo ? "영상 재생성" : "영상 생성"}
-                          </Button>
-                          {q.hasVideo && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                if (confirm("영상을 삭제할까요?")) hub.removeVideo(q.id);
-                              }}
-                            >
-                              삭제
-                            </Button>
-                          )}
                         </div>
                       </div>
                     </div>
