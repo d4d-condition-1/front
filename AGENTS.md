@@ -6,7 +6,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # 프로젝트 구조 규약 (반드시 준수)
 
-전체 설명은 `docs/STRUCTURE.md` 참고. 코드를 추가할 때 아래 규칙을 따른다
+전체 설명은 `docs/STRUCTURE.md` 참고
+코드를 추가할 때 아래 규칙을 따른다
 
 - **page / component / logic 분리**를 유지한다. 컴포넌트는 화면만 그리고, 데이터·상태 로직은 훅/api로 분리한다. 컴포넌트에서 `fetch`를 직접 호출하지 않는다.
 - 배치 규칙:
