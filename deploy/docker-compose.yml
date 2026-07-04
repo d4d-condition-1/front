@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
     ports:
-      - "9444:9444"
+      - "9555:9555"
 
     environment:
       # 앱 소스(.env, deploy/deploy.sh)가 마운트된 경로
