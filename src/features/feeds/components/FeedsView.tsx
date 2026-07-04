@@ -129,6 +129,9 @@ export function FeedsView() {
         keywords: newKeywords.trim(),
         language: newLang.trim(),
         description: newDesc.trim(),
+        fetchSince: newSince,
+        fetchUntil: newUntil,
+        maxPages: parseInt(newMaxPages, 10) || 5,
       });
       setChannels((prev) => [ch, ...prev]);
       setShowAddForm(false);
@@ -137,6 +140,9 @@ export function FeedsView() {
       setNewKeywords("");
       setNewLang("");
       setNewDesc("");
+      setNewSince("");
+      setNewUntil("");
+      setNewMaxPages("5");
     } catch { /* ignore */ }
     finally { setAdding(false); }
   }

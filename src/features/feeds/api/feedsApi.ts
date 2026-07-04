@@ -47,6 +47,9 @@ export function createChannel(input: {
   keywords?: string;
   language?: string;
   description?: string;
+  fetchSince?: string;
+  fetchUntil?: string;
+  maxPages?: number;
 }): Promise<FeedChannel> {
   return apiFetch<FeedChannel>("/api/admin/feeds/channels", {
     method: "POST",
