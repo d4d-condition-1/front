@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "D4D · TOEIC 학습",
-  description: "AI 기반 TOEIC 학습 서비스",
+  title: "D4D · 전투 숙달 가속 시뮬레이터",
+  description: "AI가 장병의 약점을 진단하고 맞춤형 전술 훈련을 제공합니다.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ko"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

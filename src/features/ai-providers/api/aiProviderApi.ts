@@ -1,4 +1,6 @@
-// 프론트 전용 mock: 등록된 AI 연동 목록 + 제공자 메타.
+// AI 연동 관리 (관리자용, 서버 /api/admin/ai-providers)
+import { apiFetch } from "@/lib/api";
+
 export type Provider = "openai" | "anthropic" | "google";
 
 export interface AiConnection {
@@ -10,6 +12,13 @@ export interface AiConnection {
   status: "active" | "disabled";
   requests: number;
   createdAt: string;
+}
+
+export interface AiConnectionInput {
+  provider: Provider;
+  label: string;
+  model: string;
+  apiKey: string;
 }
 
 export const PROVIDER_META: Record<
@@ -25,39 +34,31 @@ export const PROVIDER_META: Record<
   google: { name: "Google", models: ["gemini-2.5-pro", "gemini-2.5-flash"], accent: "indigo" },
 };
 
-const CONNECTIONS: AiConnection[] = [
-  {
-    id: "ai1",
-    provider: "anthropic",
-    label: "전술 문항 생성 엔진",
-    model: "claude-sonnet-5",
-    apiKeyMasked: "sk-ant-••••••4f2a",
-    status: "active",
-    requests: 12840,
-    createdAt: "2026-05-02",
-  },
-  {
-    id: "ai2",
-    provider: "anthropic",
-    label: "서술형 답변 채점(Lv.5)",
-    model: "claude-opus-4-8",
-    apiKeyMasked: "sk-ant-••••••9c11",
-    status: "active",
-    requests: 6320,
-    createdAt: "2026-05-20",
-  },
-  {
-    id: "ai3",
-    provider: "openai",
-    label: "진단 문항 생성(실험)",
-    model: "gpt-4o",
-    apiKeyMasked: "sk-••••••7b0",
-    status: "disabled",
-    requests: 410,
-    createdAt: "2026-06-10",
-  },
-];
+export function fetchAiConnections(): Promise<AiConnection[]> {
+  return apiFetch<AiConnection[]>("/api/admin/ai-providers");
+}
 
-export function getAiConnections(): AiConnection[] {
-  return CONNECTIONS;
+export function createAiConnection(
+  input: AiConnectionInput,
+): Promise<AiConnection> {
+  return apiFetch<AiConnection>("/api/admin/ai-providers", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function updateAiConnection(
+  id: string,
+  patch: Partial<Pick<AiConnection, "label" | "model" | "status">> & {
+    apiKey?: string;
+  },
+): Promise<AiConnection> {
+  return apiFetch<AiConnection>(`/api/admin/ai-providers/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteAiConnection(id: string): Promise<void> {
+  return apiFetch<void>(`/api/admin/ai-providers/${id}`, { method: "DELETE" });
 }

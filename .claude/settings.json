@@ -19,6 +19,23 @@
       "Bash(git fetch *)",
       "Bash(git commit -m '포트 되돌리기\\(웹훅 9444/프론트 9555\\) *)",
       "Bash(git push *)"
+    ],
+    "deny": [
+      "Edit(./src/lib/api/**)",
+      "Write(./src/lib/api/**)",
+      "Edit(./src/app/api/**)",
+      "Write(./src/app/api/**)",
+      "Edit(./next.config.ts)",
+      "Write(./next.config.ts)",
+      "Edit(./.env*)",
+      "Write(./.env*)",
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./.env.production)",
+      "Edit(./deploy/**)",
+      "Write(./deploy/**)",
+      "Edit(./.claude/settings.json)",
+      "Write(./.claude/settings.json)"
     ]
   }
 }

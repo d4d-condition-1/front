@@ -1,2 +1,4 @@
-export { getDashboard } from "./api/dashboardApi";
+export { fetchDashboard } from "./api/dashboardApi";
 export type { DashboardStats } from "./api/dashboardApi";
+export { useDashboard } from "./hooks/useDashboard";
+export { DashboardView, AdminStatus } from "./components/DashboardView";
