@@ -42,6 +42,7 @@ docker run -d \
   --ip "$IP" \
   --env-file "$PROJECT_DIR/.env" \
   -e NODE_ENV=production \
+  -e PORT="$PORT" \
   -p "$PORT:$PORT" \
   "$IMAGE"
 

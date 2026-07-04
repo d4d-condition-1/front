@@ -8,7 +8,7 @@ RUN apk add --no-cache docker-cli git bash flock
 WORKDIR /webhook
 COPY webhook-server.js ./webhook-server.js
 
-ENV WEBHOOK_PORT=9000
-EXPOSE 9000
+ENV WEBHOOK_PORT=9444
+EXPOSE 9444
 
 CMD ["node", "/webhook/webhook-server.js"]

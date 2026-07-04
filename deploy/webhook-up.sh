@@ -12,7 +12,7 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"   # 앱 소스(리포) 루트
 IMAGE="d4d-webhook:latest"
 CONTAINER="d4d-webhook"
 NETWORK="docker_default"
-PORT="9000"                                       # 웹훅 수신 포트
+PORT="9444"                                       # 웹훅 수신 포트
 
 # 1) 웹훅 이미지 빌드 (context = deploy/)
 docker build -t "$IMAGE" "$PROJECT_DIR/deploy"
@@ -28,7 +28,7 @@ docker run -d \
   --name "$CONTAINER" \
   --restart unless-stopped \
   --network "$NETWORK" \
-  -p "$PORT:9000" \
+  -p "$PORT:9444" \
   -e PROJECT_DIR=/app \
   --env-file "$PROJECT_DIR/.env" \
   -v /var/run/docker.sock:/var/run/docker.sock \
