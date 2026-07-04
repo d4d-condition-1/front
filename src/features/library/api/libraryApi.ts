@@ -7,18 +7,58 @@ export interface LibraryItem {
   title: string;
   category: CategoryCode;
   pages: number;
+  hasBody?: boolean; // 본문 존재 여부 (목록)
   isActive: boolean;
   uploadedAt: string;
+}
+
+/** 단건(본문 포함) — 자료 상세 화면용 */
+export interface MaterialDetail extends LibraryItem {
+  body: string;
 }
 
 export interface LibraryItemInput {
   title: string;
   category: CategoryCode;
   pages: number;
+  body?: string;
+}
+
+/** AI 문항 초안 (저장 전 — 서버 스키마와 동일 형태) */
+export interface DraftQuestion {
+  type: "multiple_choice" | "situational";
+  difficulty: number;
+  situation: string | null;
+  question: string;
+  options: string[];
+  answerIndex: number;
+  explanation: string;
+  reference: string;
+}
+
+export interface GenerateResult {
+  materialId: string;
+  category: CategoryCode;
+  drafts: DraftQuestion[];
 }
 
 export function fetchLibrary(): Promise<LibraryItem[]> {
   return apiFetch<LibraryItem[]>("/api/admin/materials");
+}
+
+export function fetchMaterial(id: string): Promise<MaterialDetail> {
+  return apiFetch<MaterialDetail>(`/api/admin/materials/${id}`);
+}
+
+/** AI 문항 초안 생성 (저장 X — 검수 후 문제 은행에 저장) */
+export function generateQuestions(
+  materialId: string,
+  opts: { count?: number; difficulty?: number; instructions?: string },
+): Promise<GenerateResult> {
+  return apiFetch<GenerateResult>(
+    `/api/admin/materials/${materialId}/generate-questions`,
+    { method: "POST", body: JSON.stringify(opts) },
+  );
 }
 
 export function createLibraryItem(

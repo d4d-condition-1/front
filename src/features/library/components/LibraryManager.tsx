@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import Link from "next/link";
 
 import { Badge, Button, Card, Icon } from "@/components/ui";
 import { AdminStatus } from "@/features/admin-dashboard";
@@ -69,17 +70,20 @@ export function LibraryManager() {
                 >
                   {it.category}
                 </div>
-                <div className="min-w-0 flex-1">
+                <Link href={`/admin/materials/${it.id}`} className="min-w-0 flex-1 group">
                   <div className="flex items-center gap-2">
-                    <p className="truncate font-semibold text-ink">{it.title}</p>
+                    <p className="truncate font-semibold text-ink group-hover:text-primary-300">
+                      {it.title}
+                    </p>
                     <Badge tone={it.isActive ? "green" : "slate"}>
                       {it.isActive ? "활성" : "비활성"}
                     </Badge>
+                    {it.hasBody === false && <Badge tone="amber">본문 없음</Badge>}
                   </div>
                   <p className="mt-0.5 text-xs text-ink-faint">
-                    {cat.name} · {it.pages}페이지 · {it.uploadedAt}
+                    {cat.name} · {it.pages}페이지 · 문제 관리·AI 생성 →
                   </p>
-                </div>
+                </Link>
                 <Button variant="ghost" size="sm" onClick={() => toggle(it)}>
                   {it.isActive ? "비활성" : "활성"}
                 </Button>
