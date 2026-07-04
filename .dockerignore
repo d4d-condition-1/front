@@ -7,7 +7,8 @@ npm-debug.log*
 Dockerfile
 .dockerignore
 docker-compose.yml
-.env
+# .env 는 빌드 컨텍스트에 포함한다 — Next.js 가 build 시점에 읽어
+# NEXT_PUBLIC_* 값을 번들에 주입한다. (dev 전용 .env.local 등은 계속 제외)
 .env.*
 !.env.example
 .DS_Store
