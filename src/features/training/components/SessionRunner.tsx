@@ -92,6 +92,29 @@ export function SessionRunner({ title, mode, category, exitHref, ctaHref, ctaLab
 
         <p className="mb-5 text-[15px] font-semibold leading-relaxed text-ink">{q.question}</p>
 
+        {/* 문제 이미지 */}
+        {q.imageData && (
+          <div className="mb-4">
+            <img
+              src={q.imageData.startsWith("data:") ? q.imageData : `data:image/png;base64,${q.imageData}`}
+              alt="문제 이미지"
+              className="w-full max-w-md rounded-2xl border border-line"
+            />
+          </div>
+        )}
+
+        {/* 문제 영상 */}
+        {q.videoData && (
+          <div className="mb-4">
+            <video
+              src={`data:video/mp4;base64,${q.videoData}`}
+              controls
+              playsInline
+              className="w-full max-w-md rounded-2xl border border-line"
+            />
+          </div>
+        )}
+
         <div className="flex flex-col gap-2.5">
           {q.options.map((opt, i) => (
             <Choice

@@ -1,4 +1,3 @@
-// 학습 리포트 — 서버가 통계·강점/약점 분석을 계산한다. (/api/report)
 import { apiFetch } from "@/lib/api";
 import { getCategory, type CategoryCode, type CategoryScore } from "@/features/categories";
 
@@ -15,17 +14,61 @@ export interface Analysis {
   recommendation: string;
 }
 
+export interface ScoreWithUnit {
+  code: CategoryCode;
+  name: string;
+  color: string;
+  score: number;
+  attempts: number;
+  correct: number;
+  unitAvg: number | null;
+}
+
 export interface ReportData {
   stats: TrainingStats;
-  analysis: Analysis | null; // 풀이 이력이 없으면 null
-  scores: { code: CategoryCode; score: number; attempts: number; correct: number }[];
+  analysis: Analysis | null;
+  scores: ScoreWithUnit[];
+  rank: number;
+  totalInUnit: number;
 }
 
 export function fetchReport(): Promise<ReportData> {
   return apiFetch<ReportData>("/api/report");
 }
 
-/** 레이더 차트용 데이터 변환 (카테고리 점수 → {label, value}) */
 export function toRadarData(scores: Pick<CategoryScore, "code" | "score">[]) {
   return scores.map((s) => ({ label: getCategory(s.code).name.slice(0, 2), value: s.score }));
+}
+
+export interface AnswerDetail {
+  id: number;
+  correct: boolean;
+  selectedIndex: number;
+  elapsedSec: number | null;
+  createdAt: string;
+  category: string;
+  categoryName: string;
+  difficulty: number;
+  question: string;
+  options: string[];
+  answerIndex: number;
+  explanation: string;
+}
+
+export interface WeakCategory {
+  code: string;
+  name: string;
+  color: string;
+  total: number;
+  wrong: number;
+  wrongRate: number;
+}
+
+export interface ReportDetail {
+  history: AnswerDetail[];
+  categories: WeakCategory[];
+}
+
+export function fetchReportDetail(): Promise<ReportDetail> {
+  return apiFetch<ReportDetail>("/api/report/detail");
 }

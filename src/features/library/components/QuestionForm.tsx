@@ -235,25 +235,48 @@ export function QuestionForm({ materialId, categoryName, initial, editingId, onS
         className={inputCls}
       />
 
-      {v.imageData && (
-        <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-ink-muted">AI 생성 이미지</span>
-          <div className="flex items-start gap-3">
+      {/* 이미지 첨부 */}
+      <div className="flex flex-col gap-1.5">
+        <span className="text-xs font-medium text-ink-muted">문제 이미지</span>
+        {v.imageData ? (
+          <div className="relative inline-block self-start">
             <img
               src={v.imageData.startsWith("data:") ? v.imageData : `data:image/png;base64,${v.imageData}`}
               alt="문제 이미지"
-              className="h-32 w-32 rounded-lg border border-line object-cover"
+              className="h-36 w-36 rounded-lg border border-line object-cover"
             />
             <button
               type="button"
               onClick={() => patch({ imageData: null, imagePrompt: null })}
-              className="text-xs text-red-400 hover:underline"
+              className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-surface-2 ring-1 ring-line text-ink-faint hover:text-red-400"
+              title="이미지 제거"
             >
-              이미지 제거
+              <Icon name="x" size={14} />
             </button>
           </div>
-        </div>
-      )}
+        ) : (
+          <label className="flex cursor-pointer items-center gap-2 self-start rounded-lg border border-dashed border-line px-4 py-3 text-xs text-ink-muted hover:border-primary-500 hover:text-primary-400 transition-colors">
+            <Icon name="upload" size={16} />
+            이미지 첨부
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const result = reader.result as string;
+                  patch({ imageData: result, imagePrompt: null });
+                };
+                reader.readAsDataURL(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
+        )}
+      </div>
 
       {error && (
         <p className="rounded-lg bg-red-500/10 px-3 py-2 text-xs font-medium text-red-300">{error}</p>

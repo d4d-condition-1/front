@@ -24,7 +24,8 @@ export type IconName =
   | "dumbbell"
   | "list"
   | "upload"
-  | "file";
+  | "file"
+  | "rss";
 
 const paths: Record<IconName, string> = {
   home: "M3 10.5 12 3l9 7.5M5 9.5V21h5v-6h4v6h5V9.5",
@@ -57,6 +58,7 @@ const paths: Record<IconName, string> = {
   list: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01",
   upload: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12",
   file: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8ZM14 2v6h6",
+  rss: "M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16M5 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z",
 };
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {

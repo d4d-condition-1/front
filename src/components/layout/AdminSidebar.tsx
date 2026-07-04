@@ -16,6 +16,7 @@ const items: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin/accounts", label: "계정/권한", icon: "settings" },
   { href: "/admin/ai", label: "AI 연동", icon: "cpu" },
   { href: "/admin/materials", label: "학습 자료", icon: "book" },
+  { href: "/admin/feeds", label: "정보 수집", icon: "rss" },
 ];
 
 /** 관리자 콘솔 사이드바. */

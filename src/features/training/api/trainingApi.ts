@@ -15,6 +15,8 @@ export interface SessionQuestion {
   question: string;
   options: string[];
   points: number;
+  imageData?: string | null;
+  videoData?: string | null;
 }
 
 export interface StartSessionResult {
