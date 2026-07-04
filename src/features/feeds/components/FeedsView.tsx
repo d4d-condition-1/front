@@ -427,6 +427,11 @@ export function FeedsView() {
                   {!ch.keywords && (
                     <p className="text-xs text-ink-faint/60">키워드 미설정</p>
                   )}
+                  {(ch.fetchSince || ch.fetchUntil) && (
+                    <p className="text-xs text-ink-faint">
+                      기간: {ch.fetchSince || "∞"} ~ {ch.fetchUntil || "∞"}{ch.maxPages ? ` · ${ch.maxPages}페이지` : ""}
+                    </p>
+                  )}
                   {ch.description && (
                     <p className="mt-0.5 text-xs text-ink-muted">{ch.description}</p>
                   )}
