@@ -55,6 +55,9 @@ export function FeedsView() {
   const [newKeywords, setNewKeywords] = useState("");
   const [newLang, setNewLang] = useState("");
   const [newDesc, setNewDesc] = useState("");
+  const [newSince, setNewSince] = useState("");
+  const [newUntil, setNewUntil] = useState("");
+  const [newMaxPages, setNewMaxPages] = useState("5");
   const [adding, setAdding] = useState(false);
 
   // 수집 중
@@ -346,6 +349,38 @@ export function FeedsView() {
                 <option value="ja">日本語</option>
                 <option value="zh">中文</option>
               </select>
+              <p className="text-xs font-semibold text-ink-muted">수집 범위</p>
+              <div className="grid grid-cols-3 gap-2">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-ink-faint">시작일</span>
+                  <input
+                    type="date"
+                    value={newSince}
+                    onChange={(e) => setNewSince(e.target.value)}
+                    className={inputCls}
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-ink-faint">종료일</span>
+                  <input
+                    type="date"
+                    value={newUntil}
+                    onChange={(e) => setNewUntil(e.target.value)}
+                    className={inputCls}
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-ink-faint">최대 페이지</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={50}
+                    value={newMaxPages}
+                    onChange={(e) => setNewMaxPages(e.target.value)}
+                    className={inputCls}
+                  />
+                </label>
+              </div>
               <input
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
