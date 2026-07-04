@@ -117,6 +117,11 @@ export function deleteArticle(id: string): Promise<void> {
   return apiFetch<void>(`/api/admin/feeds/articles/${id}`, { method: "DELETE" });
 }
 
+export function deleteAllArticles(channelId?: string): Promise<void> {
+  const q = channelId ? `?channelId=${channelId}` : "";
+  return apiFetch<void>(`/api/admin/feeds/articles${q}`, { method: "DELETE" });
+}
+
 export function articleToMaterial(
   id: string,
   input: { category: CategoryCode; title?: string; body?: string },
