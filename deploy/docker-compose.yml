@@ -1,0 +1,37 @@
+# 웹훅 서버 컨테이너를 compose 로 실행하는 방식 (webhook-up.sh 와 동일).
+#   실행:  cd deploy && docker compose up -d --build
+#   로그:  docker compose logs -f
+# compose 파일 위치가 deploy/ 이므로 ../ = 리포 루트를 가리킨다.
+
+services:
+  webhook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: d4d-webhook:latest
+    container_name: d4d-webhook
+    restart: unless-stopped
+
+    ports:
+      - "9000:9000"
+
+    environment:
+      # 앱 소스(.env, deploy/deploy.sh)가 마운트된 경로
+      - PROJECT_DIR=/app
+    env_file:
+      # WEBHOOK_SECRET 등 (리포 루트의 .env)
+      - ../.env
+
+    volumes:
+      # 컨테이너 안에서 host Docker 데몬 조작
+      - /var/run/docker.sock:/var/run/docker.sock
+      # 리포 전체를 /app 으로 마운트 (deploy.sh 가 여기서 build/run)
+      - ../:/app
+
+    networks:
+      - docker_default
+
+# 앱 컨테이너와 동일한 외부 네트워크
+networks:
+  docker_default:
+    external: true

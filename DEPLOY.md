@@ -21,10 +21,11 @@ d4d-front 컨테이너 (앱)
 
 | 파일                | 역할                                                        |
 | ------------------- | ----------------------------------------------------------- |
-| `Dockerfile`        | 웹훅 서버 이미지 (Node + docker CLI + git + flock)          |
-| `webhook-server.js` | 웹훅 수신 (의존성 0, HMAC 검증 → deploy.sh 실행)            |
-| `webhook-up.sh`     | 웹훅 이미지 빌드 + 컨테이너 실행                            |
-| `deploy.sh`         | 앱 이미지 빌드 + 앱 컨테이너 실행 (고정 IP)                 |
+| `Dockerfile`         | 웹훅 서버 이미지 (Node + docker CLI + git + flock)         |
+| `docker-compose.yml` | 웹훅 컨테이너 실행 (compose 방식)                          |
+| `webhook-server.js`  | 웹훅 수신 (의존성 0, HMAC 검증 → deploy.sh 실행)           |
+| `webhook-up.sh`      | 웹훅 컨테이너 실행 (docker run 스크립트 방식)              |
+| `deploy.sh`          | 앱 이미지 빌드 + 앱 컨테이너 실행 (고정 IP)                |
 
 ## 1. 서버 최초 1회 준비
 
@@ -48,10 +49,20 @@ docker network inspect docker_default >/dev/null 2>&1 \
 
 ## 2. 웹훅 컨테이너 기동
 
+방식 A — compose (권장):
+
+```bash
+cd ~/apps/d4d-front/deploy
+docker compose up -d --build
+docker compose logs -f                  # "listening on :9000" 확인
+```
+
+방식 B — 스크립트(docker run):
+
 ```bash
 cd ~/apps/d4d-front
 bash deploy/webhook-up.sh
-docker logs -f d4d-webhook              # "listening on :9000" 확인
+docker logs -f d4d-webhook
 ```
 
 `--restart unless-stopped` 라 서버 재부팅 시 자동 기동됩니다.
