@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 // 배포 웹훅 서버 (의존성 0, Node 내장 모듈만). 호스트에서 실행한다.
 //
-//   GitHub push ──webhook──▶ 이 서버(:9555) ──▶ deploy/deploy.sh 실행
+//   GitHub push ──webhook──▶ 이 서버(:9444) ──▶ deploy/deploy.sh 실행
 //
 // - X-Hub-Signature-256 을 WEBHOOK_SECRET(.env)으로 HMAC 검증
 // - push 이벤트 & 대상 브랜치(DEPLOY_BRANCH)만 배포
@@ -24,7 +24,7 @@ const { spawn } = require("node:child_process");
 const ROOT = process.env.PROJECT_DIR || path.resolve(__dirname, "..");
 loadEnv(path.join(ROOT, ".env"));
 
-const PORT = Number(process.env.WEBHOOK_PORT) || 9555;
+const PORT = Number(process.env.WEBHOOK_PORT) || 9444;
 const SECRET = process.env.WEBHOOK_SECRET || "";
 const BRANCH = process.env.DEPLOY_BRANCH || "main";
 const DEPLOY_SCRIPT = path.join(ROOT, "deploy", "deploy.sh");

@@ -7,10 +7,10 @@
 git push origin main
       │  GitHub Webhook (push, application/json, X-Hub-Signature-256)
       ▼
-d4d-webhook 컨테이너 (:9555)   ── webhook-server.js: HMAC + branch 검증
+d4d-webhook 컨테이너 (:9444)   ── webhook-server.js: HMAC + branch 검증
       │  deploy.sh 실행 (host docker.sock 사용)
       ▼
-docker build  →  docker run  (docker_default / 172.23.0.4 : 9444)
+docker build  →  docker run  (docker_default / 172.23.0.4 : 9555)
       ▼
 d4d-front 컨테이너 (앱)
 ```
@@ -54,7 +54,7 @@ docker network inspect docker_default >/dev/null 2>&1 \
 ```bash
 cd ~/apps/d4d-front/deploy
 docker compose up -d --build
-docker compose logs -f                  # "listening on :9555" 확인
+docker compose logs -f                  # "listening on :9444" 확인
 ```
 
 방식 B — 스크립트(docker run):
@@ -78,7 +78,7 @@ docker exec d4d-webhook bash /app/deploy/deploy.sh
 
 | 항목         | 값                                             |
 | ------------ | ---------------------------------------------- |
-| Payload URL  | `http://<서버IP>:9555/webhook` (또는 HTTPS 도메인) |
+| Payload URL  | `http://<서버IP>:9444/webhook` (또는 HTTPS 도메인) |
 | Content type | `application/json`                             |
 | Secret       | `.env` 의 `WEBHOOK_SECRET` 과 **동일**         |
 | Events       | `Just the push event`                          |
@@ -94,7 +94,7 @@ docker logs -f d4d-webhook              # 배포 진행 로그
 
 ## 참고
 
-- **9555 포트 오픈** 필요(방화벽/보안그룹). 실서비스는 Nginx/Caddy로 HTTPS 프록시 권장.
+- **9444 포트 오픈** 필요(방화벽/보안그룹). 실서비스는 Nginx/Caddy로 HTTPS 프록시 권장.
 - **private 저장소**면 컨테이너 안 git pull 인증 수단 필요(HTTPS 토큰 remote 또는 deploy key).
 - **CI**: `.github/workflows/ci.yml` 은 push/PR 때 lint+build 검증만 (배포 무관).
 - **롤백**: `docker exec d4d-webhook sh -c 'cd /app && git reset --hard <커밋> && bash deploy/deploy.sh'`.
