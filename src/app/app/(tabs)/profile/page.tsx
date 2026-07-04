@@ -18,13 +18,13 @@ export default function ProfilePage() {
       <h1 className="text-xl font-bold text-slate-900">프로필</h1>
 
       <Card className="flex items-center gap-4">
-        <span className="grid h-14 w-14 place-items-center rounded-full bg-indigo-100 text-lg font-bold text-indigo-700">
+        <span className="grid h-14 w-14 place-items-center rounded-full bg-primary-100 text-lg font-bold text-primary-700">
           김
         </span>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <p className="font-bold text-slate-900">김일병</p>
-            <Badge tone="indigo">등급 {gradeOf(overall)}</Badge>
+            <Badge tone="primary">등급 {gradeOf(overall)}</Badge>
           </div>
           <p className="text-xs text-slate-400">1소대 3분대 · 종합 {overall}점</p>
         </div>

@@ -10,7 +10,7 @@ import { useAuthForm } from "../hooks/useAuthForm";
 import { useUser } from "../hooks/useUser";
 
 const inputCls =
-  "w-full rounded-xl border border-white/20 bg-white/10 px-3.5 py-3 text-sm text-white placeholder:text-indigo-200 outline-none backdrop-blur focus:border-white/50 focus:ring-2 focus:ring-white/20";
+  "w-full rounded-xl border border-white/20 bg-white/10 px-3.5 py-3 text-sm text-white placeholder:text-primary-200 outline-none backdrop-blur focus:border-white/50 focus:ring-2 focus:ring-white/20";
 
 type Mode = "login" | "register";
 type SignupRole = "trainee" | "admin";
@@ -28,6 +28,7 @@ export function AuthCard() {
   const [unit, setUnit] = useState("");
   const [signupRole, setSignupRole] = useState<SignupRole>("trainee");
   const [adminCode, setAdminCode] = useState("");
+  const [unitCode, setUnitCode] = useState("");
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -41,6 +42,8 @@ export function AuthCard() {
         rank: rank.trim(),
         unit: unit.trim(),
         role: signupRole,
+        // 부대 코드: 장병은 필수, 관리자는 입력 시 해당 부대 담당
+        ...(unitCode.trim() ? { unitCode: unitCode.trim() } : {}),
         // 관리자 가입일 때만 코드 전송 (서버가 ADMIN_INVITE_CODE 와 대조)
         ...(signupRole === "admin" ? { adminCode: adminCode.trim() } : {}),
       });
@@ -49,7 +52,7 @@ export function AuthCard() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl bg-white/10 p-8 text-center text-sm text-indigo-100 backdrop-blur">
+      <div className="rounded-2xl bg-white/10 p-8 text-center text-sm text-primary-100 backdrop-blur">
         확인 중...
       </div>
     );
@@ -61,19 +64,19 @@ export function AuthCard() {
     const destLabel = user.role === "admin" ? "관리자 콘솔" : "훈련 앱";
     return (
       <div className="flex flex-col gap-3 rounded-2xl bg-white/10 p-6 backdrop-blur">
-        <p className="text-center text-sm text-indigo-100">
+        <p className="text-center text-sm text-primary-100">
           <b className="text-white">{user.name}</b>
           {user.rank && ` ${user.rank}`} 님으로 로그인되어 있습니다.
         </p>
         <Link
           href={dest}
-          className="rounded-xl bg-white py-3 text-center font-bold text-indigo-700 transition-transform hover:scale-[1.01]"
+          className="rounded-xl bg-white py-3 text-center font-bold text-primary-700 transition-transform hover:scale-[1.01]"
         >
           {destLabel}로 이동
         </Link>
         <button
           onClick={() => logout().then(() => window.location.reload())}
-          className="text-xs text-indigo-200 underline-offset-2 hover:underline"
+          className="text-xs text-primary-200 underline-offset-2 hover:underline"
         >
           로그아웃
         </button>
@@ -93,8 +96,8 @@ export function AuthCard() {
             className={cn(
               "rounded-lg py-2 text-sm font-semibold transition-colors",
               mode === m
-                ? "bg-white text-indigo-700"
-                : "text-indigo-100 hover:text-white",
+                ? "bg-white text-primary-700"
+                : "text-primary-100 hover:text-white",
             )}
           >
             {m === "login" ? "로그인" : "회원가입"}
@@ -161,8 +164,8 @@ export function AuthCard() {
                   className={cn(
                     "rounded-lg py-2 text-xs font-semibold transition-colors",
                     signupRole === value
-                      ? "bg-white text-indigo-700"
-                      : "text-indigo-100 hover:text-white",
+                      ? "bg-white text-primary-700"
+                      : "text-primary-100 hover:text-white",
                   )}
                 >
                   {label}
@@ -170,7 +173,22 @@ export function AuthCard() {
               ))}
             </div>
 
-            {signupRole === "admin" && (
+            {signupRole === "trainee" ? (
+              <>
+                <input
+                  value={unitCode}
+                  onChange={(e) => setUnitCode(e.target.value.toUpperCase())}
+                  placeholder="부대 코드 (예: K7QM-2FWD)"
+                  autoComplete="off"
+                  required
+                  className={inputCls}
+                />
+                <p className="text-[11px] leading-relaxed text-primary-200">
+                  소속 부대 관리자에게 전달받은 부대 코드를 입력하세요. 코드로
+                  소속 부대가 자동 등록됩니다.
+                </p>
+              </>
+            ) : (
               <>
                 <input
                   value={adminCode}
@@ -181,9 +199,17 @@ export function AuthCard() {
                   required
                   className={inputCls}
                 />
-                <p className="text-[11px] leading-relaxed text-indigo-200">
-                  부대에서 발급한 관리자 가입 코드가 필요합니다. 코드가 없다면
-                  일반 장병으로 가입 후 기존 관리자에게 권한 부여를 요청하세요.
+                <input
+                  value={unitCode}
+                  onChange={(e) => setUnitCode(e.target.value.toUpperCase())}
+                  placeholder="담당 부대 코드 (선택 — 없으면 전체 관리)"
+                  autoComplete="off"
+                  className={inputCls}
+                />
+                <p className="text-[11px] leading-relaxed text-primary-200">
+                  부대에서 발급한 관리자 가입 코드가 필요합니다. 담당 부대
+                  코드를 입력하면 해당 부대만 관리하고, 비워두면 전체를
+                  관리합니다.
                 </p>
               </>
             )}
@@ -199,7 +225,7 @@ export function AuthCard() {
         <Button
           type="submit"
           disabled={form.submitting}
-          className="mt-1 w-full bg-white text-indigo-700 hover:bg-indigo-50"
+          className="mt-1 w-full bg-white text-primary-700 hover:bg-primary-50"
         >
           {form.submitting
             ? "처리 중..."

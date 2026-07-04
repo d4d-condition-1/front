@@ -73,14 +73,14 @@ export function AccountsView() {
                   >
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <span className="grid h-9 w-9 place-items-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+                        <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">
                           {a.name.slice(0, 1)}
                         </span>
                         <div>
                           <p className="font-semibold text-slate-800">
                             {a.name}
                             {a.isSelf && (
-                              <span className="ml-1.5 text-xs font-medium text-indigo-500">
+                              <span className="ml-1.5 text-xs font-medium text-primary-500">
                                 (본인)
                               </span>
                             )}
@@ -93,7 +93,7 @@ export function AccountsView() {
                       {[a.rank, a.unit].filter(Boolean).join(" / ") || "-"}
                     </td>
                     <td className="px-5 py-3">
-                      <Badge tone={a.role === "admin" ? "indigo" : "slate"}>
+                      <Badge tone={a.role === "admin" ? "primary" : "slate"}>
                         {a.role === "admin" ? "관리자" : "장병"}
                       </Badge>
                     </td>

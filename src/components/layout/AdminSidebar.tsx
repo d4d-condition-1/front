@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const items: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin", label: "부대 현황", icon: "chart" },
+  { href: "/admin/units", label: "부대 관리", icon: "home" },
   { href: "/admin/users", label: "장병 관리", icon: "users" },
   { href: "/admin/accounts", label: "계정/권한", icon: "settings" },
   { href: "/admin/ai", label: "AI 연동", icon: "cpu" },
@@ -21,7 +22,7 @@ export function AdminSidebar() {
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 md:flex">
       <Link href="/admin" className="mb-8 flex items-center gap-2 px-2">
-        <span className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+        <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary-600 text-sm font-bold text-white">
           D4D
         </span>
         <span className="font-bold text-slate-900">Admin</span>
@@ -40,7 +41,7 @@ export function AdminSidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-indigo-50 text-indigo-700"
+                  ? "bg-primary-50 text-primary-700"
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-800",
               )}
             >

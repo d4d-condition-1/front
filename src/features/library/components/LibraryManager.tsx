@@ -8,7 +8,7 @@ import { CATEGORIES, getCategory, type CategoryCode } from "@/features/categorie
 import { useLibrary } from "../hooks/useLibrary";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15";
+  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
 
 /** 학습 자료 관리 (등록 · 목록 · 활성 토글 · 삭제). */
 export function LibraryManager() {

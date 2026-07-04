@@ -30,17 +30,17 @@ export default function AppHome() {
       </header>
 
       {/* 종합 점수 + 등급 */}
-      <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 p-5 text-white shadow-sm">
+      <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-700 p-5 text-white shadow-sm">
         <div className="grid h-20 w-20 place-items-center rounded-2xl bg-white/15 text-4xl font-black backdrop-blur">
           {grade}
         </div>
         <div className="flex-1">
-          <p className="text-xs text-indigo-100">종합 숙련도</p>
+          <p className="text-xs text-primary-100">종합 숙련도</p>
           <p className="text-3xl font-black">
             {overall}
-            <span className="text-base font-medium text-indigo-200"> / 100</span>
+            <span className="text-base font-medium text-primary-200"> / 100</span>
           </p>
-          <p className="mt-1 text-xs text-indigo-100">등급 {grade}</p>
+          <p className="mt-1 text-xs text-primary-100">등급 {grade}</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export default function AppHome() {
 
       <Link
         href="/app/diagnostic"
-        className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm font-semibold text-indigo-600 ring-1 ring-indigo-100"
+        className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm font-semibold text-primary-600 ring-1 ring-primary-100"
       >
         <Icon name="chart" size={18} /> 진단 테스트 다시 하기
       </Link>

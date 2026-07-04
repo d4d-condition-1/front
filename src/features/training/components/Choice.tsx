@@ -26,8 +26,8 @@ export function Choice({ label, index, selected, revealed, isAnswer, onClick }: 
         "flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-colors",
         showCorrect && "border-emerald-500 bg-emerald-50 text-emerald-800",
         showWrong && "border-red-400 bg-red-50 text-red-700",
-        !revealed && selected && "border-indigo-500 bg-indigo-50 text-indigo-800",
-        !revealed && !selected && "border-slate-200 bg-white text-slate-700 hover:border-indigo-300",
+        !revealed && selected && "border-primary-500 bg-primary-50 text-primary-800",
+        !revealed && !selected && "border-slate-200 bg-white text-slate-700 hover:border-primary-300",
         revealed && !isAnswer && !selected && "border-slate-200 bg-white text-slate-400",
       )}
     >
@@ -36,7 +36,7 @@ export function Choice({ label, index, selected, revealed, isAnswer, onClick }: 
           "grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold",
           showCorrect && "bg-emerald-500 text-white",
           showWrong && "bg-red-400 text-white",
-          !revealed && selected && "bg-indigo-500 text-white",
+          !revealed && selected && "bg-primary-500 text-white",
           !revealed && !selected && "bg-slate-100 text-slate-500",
           revealed && !isAnswer && !selected && "bg-slate-100 text-slate-400",
         )}

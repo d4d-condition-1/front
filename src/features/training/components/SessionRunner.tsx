@@ -45,8 +45,8 @@ export function SessionRunner({ title, questions, exitHref, ctaHref, ctaLabel }:
             <Icon name="x" size={22} />
           </Link>
           <span className="text-sm font-semibold text-slate-700">{cat.name}</span>
-          <Badge tone="indigo">Lv.{q.difficulty}</Badge>
-          <span className="ml-auto text-sm font-semibold text-indigo-600">
+          <Badge tone="primary">Lv.{q.difficulty}</Badge>
+          <span className="ml-auto text-sm font-semibold text-primary-600">
             {s.index + 1}/{s.total}
           </span>
         </div>
@@ -90,8 +90,8 @@ export function SessionRunner({ title, questions, exitHref, ctaHref, ctaLabel }:
               {s.feedback.isCorrect ? "정답" : "오답"}
             </div>
 
-            <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
-              <p className="mb-1 text-xs font-bold text-indigo-600">해설</p>
+            <div className="rounded-2xl border border-primary-100 bg-primary-50/60 p-4">
+              <p className="mb-1 text-xs font-bold text-primary-600">해설</p>
               <p className="text-sm leading-relaxed text-slate-700">{q.explanation}</p>
               <p className="mt-2 text-xs text-slate-400">출처: {q.reference}</p>
             </div>

@@ -31,7 +31,7 @@ export function AppTabBar() {
                 href={tab.href}
                 className={cn(
                   "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                  active ? "text-indigo-600" : "text-slate-400",
+                  active ? "text-primary-600" : "text-slate-400",
                 )}
               >
                 <Icon name={tab.icon} size={24} />

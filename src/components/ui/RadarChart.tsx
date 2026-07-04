@@ -10,7 +10,7 @@ interface RadarChartProps {
 }
 
 /** N축 레이더(거미줄) 차트 — 의존성 없이 SVG 로 구현. */
-export function RadarChart({ data, size = 260, color = "#4f46e5" }: RadarChartProps) {
+export function RadarChart({ data, size = 260, color = "var(--color-primary-600)" }: RadarChartProps) {
   const n = data.length;
   const cx = size / 2;
   const cy = size / 2;

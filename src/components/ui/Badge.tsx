@@ -2,10 +2,10 @@ import type { HTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
 
-type Tone = "indigo" | "green" | "amber" | "slate" | "red";
+type Tone = "primary" | "green" | "amber" | "slate" | "red";
 
 const tones: Record<Tone, string> = {
-  indigo: "bg-indigo-50 text-indigo-700",
+  primary: "bg-primary-50 text-primary-700",
   green: "bg-emerald-50 text-emerald-700",
   amber: "bg-amber-50 text-amber-700",
   slate: "bg-slate-100 text-slate-600",

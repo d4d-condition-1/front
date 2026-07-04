@@ -8,7 +8,7 @@ import { PROVIDER_META, type Provider } from "../api/aiProviderApi";
 import { useAiConnections } from "../hooks/useAiConnections";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15";
+  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/15";
 
 /** 관리자 AI 연동 관리: 등록 목록 + 신규 등록 폼. */
 export function AiManager() {

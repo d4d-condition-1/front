@@ -25,7 +25,7 @@ export function SessionResult({
   return (
     <div className="flex flex-col items-center gap-6 px-5 py-10">
       <div className="text-center">
-        <p className="text-sm font-medium text-indigo-600">{title}</p>
+        <p className="text-sm font-medium text-primary-600">{title}</p>
         <h2 className="mt-1 text-xl font-bold text-slate-900">세션 완료</h2>
       </div>
 

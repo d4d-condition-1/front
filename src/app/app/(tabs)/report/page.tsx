@@ -27,7 +27,7 @@ export default function ReportPage() {
       <div className="grid grid-cols-2 gap-3">
         {tiles.map((t) => (
           <Card key={t.label} className="flex items-center gap-3 p-4">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-50 text-indigo-600">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary-50 text-primary-600">
               <Icon name={t.icon} size={20} />
             </span>
             <div>
@@ -58,9 +58,9 @@ export default function ReportPage() {
             <p className="text-sm text-slate-500">{analysis.weakness.note}</p>
           </div>
         </div>
-        <div className="flex items-start gap-3 rounded-xl bg-indigo-50 p-3">
-          <Badge tone="indigo">추천</Badge>
-          <p className="text-sm font-medium text-indigo-800">{analysis.recommendation}</p>
+        <div className="flex items-start gap-3 rounded-xl bg-primary-50 p-3">
+          <Badge tone="primary">추천</Badge>
+          <p className="text-sm font-medium text-primary-800">{analysis.recommendation}</p>
         </div>
       </Card>
 
