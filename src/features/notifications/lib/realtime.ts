@@ -21,7 +21,7 @@ const listeners = new Map<string, Set<Listener>>();
 
 function wsUrl(): string | null {
   if (typeof window === "undefined") return null;
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = sessionStorage.getItem(TOKEN_KEY);
   if (!token) return null;
   // API_BASE(http/https) → ws/wss. 비어 있으면 현재 호스트 기준.
   const base = API_BASE || window.location.origin;
