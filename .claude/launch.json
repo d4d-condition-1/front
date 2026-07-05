@@ -7,6 +7,12 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "landing-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "/private/tmp/claude-501/-Users-kangmin-Desktop-01-project-d4d-front/be59cb35-7bab-497d-b8bf-884072c4fb7d/scratchpad", "-l", "4567", "--no-clipboard"],
+      "port": 4567
     }
   ]
 }

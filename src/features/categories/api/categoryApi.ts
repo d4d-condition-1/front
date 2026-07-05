@@ -2,7 +2,7 @@ import { apiFetch } from "@/lib/api";
 
 // 서버 DB와 동기화되는 카테고리. 앱 부트 시 hydrateCategories()로 덮어쓴다.
 export type CategoryCode = string;
-export type Grade = "S" | "A" | "B" | "C" | "D";
+export type Grade = "특급" | "1급" | "2급" | "3급" | "미달";
 
 export interface Category {
   code: CategoryCode;
@@ -58,11 +58,11 @@ export function getCategory(code: CategoryCode): Category {
 
 /** 점수 → 등급 */
 export function gradeOf(score: number): Grade {
-  if (score >= 90) return "S";
-  if (score >= 75) return "A";
-  if (score >= 60) return "B";
-  if (score >= 40) return "C";
-  return "D";
+  if (score >= 90) return "특급";
+  if (score >= 75) return "1급";
+  if (score >= 60) return "2급";
+  if (score >= 40) return "3급";
+  return "미달";
 }
 
 /** 점수 → 출제 난이도 레벨(1~5) */

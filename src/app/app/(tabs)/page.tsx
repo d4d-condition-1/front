@@ -8,11 +8,11 @@ import { gradeOf } from "@/features/categories";
 import { useReport } from "@/features/report";
 
 const GRADE_COLOR: Record<string, string> = {
-  S: "#a6c06f",
-  A: "#a6c06f",
-  B: "#cba556",
-  C: "#cba556",
-  D: "#d18a62",
+  "특급": "#a6c06f",
+  "1급": "#a6c06f",
+  "2급": "#cba556",
+  "3급": "#cba556",
+  "미달": "#d18a62",
 };
 
 function gc(score: number) {

@@ -3,11 +3,11 @@ import type { Grade } from "@/features/categories";
 import type { Trainee } from "../api/adminUserApi";
 
 const gradeTone: Record<Grade, "green" | "primary" | "amber" | "red"> = {
-  S: "primary",
-  A: "green",
-  B: "green",
-  C: "amber",
-  D: "red",
+  "특급": "primary",
+  "1급": "green",
+  "2급": "green",
+  "3급": "amber",
+  "미달": "red",
 };
 
 /** 장병 목록 테이블. */

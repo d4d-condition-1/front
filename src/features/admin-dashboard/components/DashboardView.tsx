@@ -6,11 +6,11 @@ import { useDashboard } from "../hooks/useDashboard";
 import { CategoryAnalyticsView } from "./CategoryAnalyticsView";
 
 const gradeColor: Record<string, string> = {
-  S: "bg-primary-600",
-  A: "bg-emerald-500",
-  B: "bg-sky-500",
-  C: "bg-amber-500",
-  D: "bg-red-500",
+  "특급": "bg-primary-600",
+  "1급": "bg-emerald-500",
+  "2급": "bg-sky-500",
+  "3급": "bg-amber-500",
+  "미달": "bg-red-500",
 };
 
 /** 관리자 대시보드 화면 (데이터는 useDashboard 훅이 담당). */

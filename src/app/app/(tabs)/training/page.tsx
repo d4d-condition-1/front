@@ -10,11 +10,11 @@ import { fetchAvailableTrainings, type AvailableCategory } from "@/features/trai
 function ScoreBadge({ score }: { score: number }) {
   const grade = gradeOf(score);
   const tone =
-    grade === "S"
+    grade === "특급"
       ? "primary"
-      : grade === "A" || grade === "B"
+      : grade === "1급" || grade === "2급"
         ? "green"
-        : grade === "C"
+        : grade === "3급"
           ? "amber"
           : "slate";
   return (
