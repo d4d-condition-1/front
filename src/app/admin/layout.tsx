@@ -7,7 +7,7 @@ import { AdminGuard } from "@/features/auth";
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <AdminGuard>
-      <div className="flex min-h-screen bg-bg">
+      <div className="flex min-h-screen flex-col bg-bg md:flex-row">
         <AdminSidebar />
         <div className="min-w-0 flex-1">{children}</div>
       </div>

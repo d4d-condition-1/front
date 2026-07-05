@@ -6,15 +6,34 @@ import { AdminHeader } from "@/components/layout";
 import { Badge, Button } from "@/components/ui";
 import { AdminStatus } from "@/features/admin-dashboard";
 import type { Role } from "@/features/auth";
+import { useUser } from "@/features/auth/hooks/useUser";
 import type { Account } from "../api/accountApi";
+import { resetPassword } from "../api/accountApi";
 import { useAccounts } from "../hooks/useAccounts";
 
 /** 계정/권한 관리 화면. 관리자 승격·해제를 담당한다. */
 export function AccountsView() {
   const { accounts, loading, error, pendingId, changeRole } = useAccounts();
+  const { user: me } = useUser();
+  const isSuperAdmin = me?.role === "super_admin";
   const [actionError, setActionError] = useState<string | null>(null);
+  const [resettingId, setResettingId] = useState<string | null>(null);
 
   const adminCount = accounts.filter((a) => a.role === "admin" || a.role === "super_admin").length;
+
+  async function onResetPassword(account: Account) {
+    const newPw = window.prompt(`${account.name}(${account.loginId})의 새 비밀번호 (8자 이상):`);
+    if (!newPw) return;
+    if (newPw.length < 8) { setActionError("비밀번호는 8자 이상이어야 합니다."); return; }
+    setResettingId(account.id);
+    setActionError(null);
+    try {
+      await resetPassword(account.id, newPw);
+      alert(`${account.name}의 비밀번호가 초기화되었습니다.`);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "비밀번호 초기화 실패");
+    } finally { setResettingId(null); }
+  }
 
   async function onChangeRole(account: Account, role: Role) {
     const label =
@@ -100,29 +119,41 @@ export function AccountsView() {
                     <td className="px-5 py-3 text-ink-muted">{a.createdAt}</td>
                     <td className="px-5 py-3 text-ink-faint">{a.lastActive}</td>
                     <td className="px-5 py-3">
-                      {a.isSelf || a.role === "super_admin" ? (
-                        <span className="text-xs text-ink-faint">{a.isSelf ? "변경 불가" : "슈퍼 관리자"}</span>
-                      ) : a.role === "admin" ? (
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          disabled={pendingId !== null}
-                          loading={pendingId === a.id}
-                          onClick={() => onChangeRole(a, "trainee")}
-                        >
-                          {pendingId === a.id ? "변경 중..." : "권한 해제"}
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          disabled={pendingId !== null}
-                          loading={pendingId === a.id}
-                          onClick={() => onChangeRole(a, "admin")}
-                        >
-                          {pendingId === a.id ? "변경 중..." : "관리자 승격"}
-                        </Button>
-                      )}
+                      <div className="flex items-center gap-1.5">
+                        {a.isSelf || a.role === "super_admin" ? (
+                          <span className="text-xs text-ink-faint">{a.isSelf ? "변경 불가" : "슈퍼 관리자"}</span>
+                        ) : a.role === "admin" ? (
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            disabled={pendingId !== null}
+                            loading={pendingId === a.id}
+                            onClick={() => onChangeRole(a, "trainee")}
+                          >
+                            {pendingId === a.id ? "변경 중..." : "권한 해제"}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={pendingId !== null}
+                            loading={pendingId === a.id}
+                            onClick={() => onChangeRole(a, "admin")}
+                          >
+                            {pendingId === a.id ? "변경 중..." : "관리자 승격"}
+                          </Button>
+                        )}
+                        {isSuperAdmin && !a.isSelf && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            loading={resettingId === a.id}
+                            onClick={() => onResetPassword(a)}
+                          >
+                            PW 초기화
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -28,3 +28,14 @@ export function updateAccountRole(
     body: JSON.stringify({ role }),
   });
 }
+
+/** 비밀번호 초기화 (슈퍼 관리자 전용) */
+export function resetPassword(
+  id: string,
+  password: string,
+): Promise<{ id: string; loginId: string; name: string }> {
+  return apiFetch(`/api/admin/users/${id}/reset-password`, {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+}
