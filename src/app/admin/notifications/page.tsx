@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AdminHeader } from "@/components/layout";
 import { Button, Card } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+
+interface SimpleUser {
+  id: string;
+  name: string;
+  rank: string;
+}
 
 interface SendResult {
   sent: number;
@@ -15,17 +21,24 @@ export default function AdminNotificationsPage() {
   const [message, setMessage] = useState("");
   const [target, setTarget] = useState<"all" | "single">("all");
   const [userId, setUserId] = useState("");
+  const [users, setUsers] = useState<SimpleUser[]>([]);
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiFetch<SimpleUser[]>("/api/admin/users")
+      .then(setUsers)
+      .catch(() => {});
+  }, []);
 
   async function onSend() {
     if (!title.trim()) {
       setError("제목을 입력해주세요.");
       return;
     }
-    if (target === "single" && !userId.trim()) {
-      setError("사용자 ID를 입력해주세요.");
+    if (target === "single" && !userId) {
+      setError("사용자를 선택해주세요.");
       return;
     }
 
@@ -39,7 +52,7 @@ export default function AdminNotificationsPage() {
         body: JSON.stringify({
           title: title.trim(),
           message: message.trim(),
-          target: target === "all" ? "all" : userId.trim(),
+          target: target === "all" ? "all" : userId,
         }),
       });
       setResult(`${res.sent}명에게 알림을 전송했습니다.`);
@@ -87,19 +100,24 @@ export default function AdminNotificationsPage() {
             </div>
           </div>
 
-          {/* 개별 사용자 ID */}
+          {/* 개별 사용자 선택 */}
           {target === "single" && (
             <div>
               <label className="mb-1.5 block text-sm font-medium text-ink-muted">
-                사용자 ID
+                사용자 선택
               </label>
-              <input
-                type="text"
+              <select
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
-                placeholder="사용자 번호 입력"
                 className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-primary-400"
-              />
+              >
+                <option value="">-- 사용자를 선택하세요 --</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.rank} {u.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
