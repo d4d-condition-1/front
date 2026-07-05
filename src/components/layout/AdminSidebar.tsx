@@ -18,6 +18,7 @@ const items: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin/ai", label: "AI 연동", icon: "cpu" },
   { href: "/admin/materials", label: "학습 자료", icon: "book" },
   { href: "/admin/feeds", label: "정보 수집", icon: "rss" },
+  { href: "/admin/notifications", label: "알림 전송", icon: "bell" },
 ];
 
 function NavContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
