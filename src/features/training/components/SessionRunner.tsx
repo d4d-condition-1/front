@@ -93,10 +93,10 @@ export function SessionRunner({ title, mode, category, exitHref, ctaHref, ctaLab
         <p className="mb-5 text-[15px] font-semibold leading-relaxed text-ink">{q.question}</p>
 
         {/* 문제 이미지 */}
-        {q.imageData && (
+        {(q.imageData || q.imageUrl) && (
           <div className="mb-4">
             <img
-              src={q.imageData.startsWith("data:") ? q.imageData : `data:image/png;base64,${q.imageData}`}
+              src={q.imageUrl ?? (q.imageData!.startsWith("data:") ? q.imageData! : `data:image/png;base64,${q.imageData}`)}
               alt="문제 이미지"
               className="w-full max-w-md rounded-2xl border border-line"
             />

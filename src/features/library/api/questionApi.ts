@@ -21,6 +21,7 @@ export interface AdminQuestion {
   materialTitle: string | null;
   hasImage: boolean;
   imageData: string | null;
+  imageUrl: string | null;
   imagePrompt: string | null;
   hasVideo: boolean;
   videoData: string | null;
@@ -40,6 +41,7 @@ export interface QuestionInput {
   explanation: string;
   reference: string;
   imageData?: string | null;
+  imageUrl?: string | null;
   imagePrompt?: string | null;
 }
 

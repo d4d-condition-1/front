@@ -8,7 +8,7 @@ import type { RegisterInput, User } from "../types";
 
 /** 로그인 성공 시 역할별 이동 경로 */
 function destinationFor(user: User): string {
-  return user.role === "admin" ? "/admin" : "/app";
+  return user.role === "admin" || user.role === "super_admin" ? "/admin" : "/app";
 }
 
 /** 로그인/회원가입 폼 로직 (제출 · 로딩 · 에러 · 성공 시 라우팅) */

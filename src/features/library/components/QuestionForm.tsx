@@ -19,6 +19,7 @@ export interface QuestionFormValue {
   reference: string;
   points: number;
   imageData?: string | null;
+  imageUrl?: string | null;
   imagePrompt?: string | null;
 }
 
@@ -214,8 +215,9 @@ export function QuestionForm({ materialId, categoryName, initial, editingId, onS
           <input
             type="number"
             min={1}
+            max={1000}
             value={v.points}
-            onChange={(e) => patch({ points: Math.max(1, Number(e.target.value) || 1) })}
+            onChange={(e) => patch({ points: Math.min(1000, Math.max(1, Number(e.target.value) || 1)) })}
             className={inputCls}
           />
         </label>

@@ -14,7 +14,7 @@ export function AccountsView() {
   const { accounts, loading, error, pendingId, changeRole } = useAccounts();
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const adminCount = accounts.filter((a) => a.role === "admin").length;
+  const adminCount = accounts.filter((a) => a.role === "admin" || a.role === "super_admin").length;
 
   async function onChangeRole(account: Account, role: Role) {
     const label =
@@ -93,15 +93,15 @@ export function AccountsView() {
                       {[a.rank, a.unit].filter(Boolean).join(" / ") || "-"}
                     </td>
                     <td className="px-5 py-3">
-                      <Badge tone={a.role === "admin" ? "primary" : "slate"}>
-                        {a.role === "admin" ? "관리자" : "장병"}
+                      <Badge tone={a.role === "super_admin" ? "amber" : a.role === "admin" ? "primary" : "slate"}>
+                        {a.role === "super_admin" ? "슈퍼 관리자" : a.role === "admin" ? "관리자" : "장병"}
                       </Badge>
                     </td>
                     <td className="px-5 py-3 text-ink-muted">{a.createdAt}</td>
                     <td className="px-5 py-3 text-ink-faint">{a.lastActive}</td>
                     <td className="px-5 py-3">
-                      {a.isSelf ? (
-                        <span className="text-xs text-ink-faint">변경 불가</span>
+                      {a.isSelf || a.role === "super_admin" ? (
+                        <span className="text-xs text-ink-faint">{a.isSelf ? "변경 불가" : "슈퍼 관리자"}</span>
                       ) : a.role === "admin" ? (
                         <Button
                           size="sm"

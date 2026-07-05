@@ -8,6 +8,7 @@ import type { QuestionFormValue } from "./QuestionForm";
 
 interface Props {
   questions: AdminQuestion[];
+  materialImages?: string[];
   onEdit: (value: QuestionFormValue, editingId: string) => void;
   onToggle: (q: AdminQuestion) => Promise<void>;
   onRemove: (id: string) => Promise<void>;
@@ -15,6 +16,8 @@ interface Props {
   onConfirmImage: (qid: string, imageData: string, imagePrompt: string) => Promise<unknown>;
   onRemoveImage: (qid: string) => Promise<void>;
   onEditImage: (qid: string, instruction: string) => Promise<unknown>;
+  onSetImageUrl?: (qid: string, imageUrl: string) => Promise<unknown>;
+  onRemoveImageUrl?: (qid: string) => Promise<void>;
 }
 
 function questionToValue(q: AdminQuestion): QuestionFormValue {
@@ -29,12 +32,14 @@ function questionToValue(q: AdminQuestion): QuestionFormValue {
     reference: q.reference,
     points: q.points,
     imageData: q.imageData ?? null,
+    imageUrl: q.imageUrl ?? null,
     imagePrompt: q.imagePrompt ?? null,
   };
 }
 
 export function MaterialQuestions({
   questions,
+  materialImages = [],
   onEdit,
   onToggle,
   onRemove,
@@ -42,12 +47,15 @@ export function MaterialQuestions({
   onConfirmImage,
   onRemoveImage,
   onEditImage,
+  onSetImageUrl,
+  onRemoveImageUrl,
 }: Props) {
   const [generatingImageId, setGeneratingImageId] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<{ qid: string; imageData: string; imagePrompt: string } | null>(null);
   const [applyingImage, setApplyingImage] = useState(false);
   const [imagePrompts, setImagePrompts] = useState<Record<string, string>>({});
   const [mediaError, setMediaError] = useState<string | null>(null);
+  const [pickingImageFor, setPickingImageFor] = useState<string | null>(null);
 
   return (
     <Card className="flex flex-col gap-2 p-0">
@@ -112,8 +120,53 @@ export function MaterialQuestions({
                   </div>
                 )}
 
+                {/* URL 이미지 (교본에서 선택된 이미지) */}
+                {q.imageUrl && !pickingImageFor && (
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={q.imageUrl}
+                      alt="문제 이미지"
+                      className="h-28 w-28 shrink-0 rounded-lg border border-line object-cover"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-ink-faint">교본 이미지 적용됨</span>
+                      <div className="flex gap-1">
+                        {materialImages.length > 0 && onSetImageUrl && (
+                          <Button variant="ghost" size="sm" onClick={() => setPickingImageFor(q.id)}>변경</Button>
+                        )}
+                        {onRemoveImageUrl && (
+                          <Button variant="ghost" size="sm" onClick={() => onRemoveImageUrl(q.id)}>제거</Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 교본 이미지 선택 패널 */}
+                {pickingImageFor === q.id && materialImages.length > 0 && onSetImageUrl && (
+                  <div className="rounded-xl bg-surface-2 p-3">
+                    <p className="mb-2 text-xs font-semibold text-ink-muted">교본 이미지에서 선택</p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {materialImages.map((url, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={async () => {
+                            await onSetImageUrl(q.id, url);
+                            setPickingImageFor(null);
+                          }}
+                          className="overflow-hidden rounded-lg border border-line transition-all hover:border-primary-500 hover:ring-2 hover:ring-primary-500/30"
+                        >
+                          <img src={url} alt={`이미지 ${i + 1}`} className="h-20 w-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                    <Button variant="secondary" size="sm" className="mt-2" onClick={() => setPickingImageFor(null)}>취소</Button>
+                  </div>
+                )}
+
                 <div className="flex items-start gap-3">
-                  {q.hasImage && q.imageData && imagePreview?.qid !== q.id && (
+                  {q.hasImage && q.imageData && imagePreview?.qid !== q.id && !q.imageUrl && (
                     <img
                       src={`data:image/png;base64,${q.imageData}`}
                       alt="문제 이미지"
@@ -233,6 +286,11 @@ export function MaterialQuestions({
                               }}
                             >
                               삭제
+                            </Button>
+                          )}
+                          {materialImages.length > 0 && onSetImageUrl && !q.imageUrl && (
+                            <Button variant="ghost" size="sm" onClick={() => setPickingImageFor(q.id)}>
+                              <Icon name="book" size={14} /> 교본 이미지
                             </Button>
                           )}
                         </>

@@ -110,6 +110,17 @@ export function useMaterialHub(id: string) {
     setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
   }, []);
 
+  const setImageUrl = useCallback(async (qid: string, imageUrl: string) => {
+    const updated = await updateQuestion(qid, { imageUrl });
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+    return updated;
+  }, []);
+
+  const removeImageUrl = useCallback(async (qid: string) => {
+    const updated = await updateQuestion(qid, { imageUrl: null });
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+  }, []);
+
   const updateMaterial = useCallback((updated: MaterialDetail) => {
     setMaterial(updated);
   }, []);
@@ -128,6 +139,8 @@ export function useMaterialHub(id: string) {
     confirmImage,
     removeImage,
     editImage,
+    setImageUrl,
+    removeImageUrl,
     genVideo,
     removeVideo,
   };

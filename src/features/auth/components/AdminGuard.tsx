@@ -14,9 +14,11 @@ export function AdminGuard({ children }: { children: ReactNode }) {
   const { user, loading } = useUser();
   const router = useRouter();
 
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+
   useEffect(() => {
-    if (!loading && user?.role !== "admin") router.replace("/");
-  }, [loading, user, router]);
+    if (!loading && !isAdmin) router.replace("/");
+  }, [loading, isAdmin, router]);
 
   if (loading) {
     return (
@@ -25,7 +27,7 @@ export function AdminGuard({ children }: { children: ReactNode }) {
       </div>
     );
   }
-  if (user?.role !== "admin") return null;
+  if (!isAdmin) return null;
 
   return <>{children}</>;
 }

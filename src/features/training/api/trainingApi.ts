@@ -16,6 +16,7 @@ export interface SessionQuestion {
   options: string[];
   points: number;
   imageData?: string | null;
+  imageUrl?: string | null;
   videoData?: string | null;
 }
 

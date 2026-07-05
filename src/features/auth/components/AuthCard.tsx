@@ -42,10 +42,8 @@ export function AuthCard() {
         rank: rank.trim(),
         unit: unit.trim(),
         role: signupRole,
-        // 부대 코드: 장병은 필수, 관리자는 입력 시 해당 부대 담당
         ...(unitCode.trim() ? { unitCode: unitCode.trim() } : {}),
-        // 관리자 가입일 때만 코드 전송 (서버가 ADMIN_INVITE_CODE 와 대조)
-        ...(signupRole === "admin" ? { adminCode: adminCode.trim() } : {}),
+        ...(signupRole !== "trainee" ? { adminCode: adminCode.trim() } : {}),
       });
     }
   }
@@ -60,8 +58,9 @@ export function AuthCard() {
 
   // 이미 로그인된 경우: 바로가기 + 로그아웃
   if (user) {
-    const dest = user.role === "admin" ? "/admin" : "/app";
-    const destLabel = user.role === "admin" ? "관리자 콘솔" : "훈련 앱";
+    const isAdmin = user.role === "admin" || user.role === "super_admin";
+    const dest = isAdmin ? "/admin" : "/app";
+    const destLabel = isAdmin ? "관리자 콘솔" : "훈련 앱";
     return (
       <div className="flex flex-col gap-3 rounded-2xl bg-white/10 p-6 backdrop-blur">
         <p className="text-center text-sm text-primary-100">
@@ -199,17 +198,9 @@ export function AuthCard() {
                   required
                   className={inputCls}
                 />
-                <input
-                  value={unitCode}
-                  onChange={(e) => setUnitCode(e.target.value.toUpperCase())}
-                  placeholder="담당 부대 코드 (선택 — 없으면 전체 관리)"
-                  autoComplete="off"
-                  className={inputCls}
-                />
                 <p className="text-[11px] leading-relaxed text-primary-200">
-                  부대에서 발급한 관리자 가입 코드가 필요합니다. 담당 부대
-                  코드를 입력하면 해당 부대만 관리하고, 비워두면 전체를
-                  관리합니다.
+                  관리자 가입 코드를 입력하면 전체 시스템을 관리할 수 있습니다.
+                  모든 부대 생성·관리, 사용자 조회가 가능합니다.
                 </p>
               </>
             )}

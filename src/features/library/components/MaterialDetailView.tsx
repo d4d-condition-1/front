@@ -89,6 +89,7 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
 
           <MaterialQuestions
             questions={questions}
+            materialImages={material.images}
             onEdit={(value, editingId) => setEditing({ value, editingId })}
             onToggle={hub.toggleQuestion}
             onRemove={hub.removeQuestion}
@@ -96,6 +97,8 @@ export function MaterialDetailView({ materialId }: { materialId: string }) {
             onConfirmImage={hub.confirmImage}
             onRemoveImage={hub.removeImage}
             onEditImage={hub.editImage}
+            onSetImageUrl={hub.setImageUrl}
+            onRemoveImageUrl={hub.removeImageUrl}
           />
         </div>
       </div>

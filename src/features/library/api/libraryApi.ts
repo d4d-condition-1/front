@@ -15,6 +15,8 @@ export interface LibraryItem {
 /** 단건(본문 포함) — 자료 상세 화면용 */
 export interface MaterialDetail extends LibraryItem {
   body: string;
+  bodyHtml: string;
+  images: string[];
   hasPdf: boolean;
   pdfFilename: string | null;
 }
